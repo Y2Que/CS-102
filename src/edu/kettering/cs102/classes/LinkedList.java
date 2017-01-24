@@ -10,57 +10,48 @@
 package edu.kettering.cs102.classes;
 
 public class LinkedList {
-	String callSign;	// call sign of station
-	String freqBand;	// either AM or FM band
-	String location;	// home of the station
-	String genre;		// format of the station
-	int freq;			/* AM frequencies are divided by 10
-						   FM frequencies are multiplied by 10 */
+	Node head, tail;
+	
 	/* Constructor
 	 * required parameters to create a Station instance: callSign is the 
 	 * abbreviation of the station, freqBand is either AM or FM, freq is the 
 	 * numeric frequency, location is the home of the station, and genre is what
 	 * you can hear about on the Station
 	 */	
-	public LinkedList (String callSign, String freqBand, int freq, 
+	public LinkedList () {
 		head = null;
+		tail = null;
 	}
 
 	/* Getter Methods
 	 * returns the instance variable values of the object
 	 */
-	public String getCallSign() { return callSign;	}
-	public String getFreqBand() { return freqBand;	}
-	public int getFreq() 		{ return freq; 		}
-	public String getLocation() { return location;	}
-	public String getGenre() 	{ return genre;		}
+	public Node getHead() { return head;	}
+	public Node getTail() { return tail;	}
 	
 	/* Setter Methods
 	 * changes the values of internal variables
 	 */
-	public void setCallSign(String input)	{ callSign = input;	}
-	public void setFreqBand(String input)	{ freqBand = input;	}
-	public void setFreq(int input)			{ freq     = input;	}
-	public void setLocation(String input)	{ location = input;	}
-	public void setGenre(String input)		{ genre    = input;	}
+	public void setHead(Node input) { head = input;	}
+	public void setTail(Node input) { tail = input;	}
 	
-	/* Formatted Getter Method
-	 * properly formats freq and appends freqBand into a string
+	/*
+	 * 
+	 * 
 	 */
-	public String getFormattedFreq() {
-		String formattedFreq;				// holds the formatted string
-		if (freqBand.equals("AM"))			// if AM, simply append suffix
-			formattedFreq = freq + "0 AM";	
-		else							// if PM, calculate freq and add suffix
-			formattedFreq = String.format("%.1f", (float) freq/10) + " FM";
-		return formattedFreq;				// return formatted string
-	}
-	
-	/* Formatted Getter Method
-	 * returns all info about the station in a formatted string
-	 */
-	public String getStation() {
-		return callSign + ", " + getFormattedFreq() + ", "
-			    + location + ": " + genre;
+	public void addStation(Station newStation) {
+		Node current = head;						// walk through nodes
+		String callSign = newStation.getCallSign();	// get current callSign
+		// when negative, current node passed the correct lexicographic spot 
+		while (current.getStation().getCallSign().compareTo(callSign) < 0 && 
+			   current != null)
+			current = current.getNext();
+		if (current == null) {
+			head = new Node(null, null, newStation);
+			tail = head;
+		} else {
+			
+		}
+		
 	}
 }
