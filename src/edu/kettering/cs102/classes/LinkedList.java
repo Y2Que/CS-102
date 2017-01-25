@@ -2,9 +2,9 @@
  * CS-102
  * 23.01.2017
  * 
- * Station.java
- * this class defines a Station object with call sign, frequency band, frequency, 
- * location, and genre attributes. 
+ * LinkedList.java
+ * this class defines a Station object with call sign, frequency band,
+ * frequency, location, and genre attributes
  */
 
 package edu.kettering.cs102.classes;
@@ -35,23 +35,56 @@ public class LinkedList {
 	public void setHead(Node input) { head = input;	}
 	public void setTail(Node input) { tail = input;	}
 	
-	/*
-	 * 
-	 * 
+	/* addStation(Station newStation)
+	 * adds a new node to the linked list and maintains the lexicographic sort
+	 * by call sign of the station
 	 */
-	public void addStation(Station newStation) {
-		Node current = head;						// walk through nodes
-		String callSign = newStation.getCallSign();	// get current callSign
-		// when negative, current node passed the correct lexicographic spot 
-		while (current.getStation().getCallSign().compareTo(callSign) < 0 && 
-			   current != null)
-			current = current.getNext();
-		if (current == null) {
-			head = new Node(null, null, newStation);
+	public void addNode(Station newStation) {
+		Node newNode = new Node(null, null, newStation); // create a new node
+		if (head == null) {		// if empty list
+			head = newNode;
 			tail = head;
-		} else {
-			
+		} else {				// if not empty list
+			Node current = head;		// variable to walk through nodes
+			String callSign = newStation.getCallSign();	// get current callSign
+			// when negative, current node passed the correct lexicographic spot 
+			while (current.getStation().getCallSign().compareTo(callSign) < 0 && 
+					current != null) {
+				current = current.getNext();	// step to next item in list
+			}
+			// if newStation a duplicate, do not add
+			if (current.getStation().getCallSign().compareTo(callSign) == 0) {
+				System.err.print("A station will that call sign already "
+						+ "exists. Please enter another station.");
+			} else if (current == null) {	// reached the end of the list
+				tail.setNext(newNode);		// link tail to new last element
+				newNode.setPrevious(tail);	// link last element to old tail
+				tail = newNode;				// redefine last node
+			} else {				// new node is not last element
+				// link previous node to newNode
+				current.getPrevious().setNext(newNode); 
+				current.setPrevious(newNode);	// link current node to newNode
+			}
 		}
+	}
+	
+	/* removeNode(callSign)
+	 * search for station by call sign, remove it from list, and return it
+	 */
+	public Node removeNode(String callSign) {
+		Node removedNode = head; 	// finds node to be removed
+		// look for desired node by call sign, move next until end of list
+		while (!removedNode.getStation().getCallSign().equals(callSign) && 
+				removedNode != null)
+			removedNode = removedNode.getNext();	// move to next node
 		
+		if (removedNode == null)	// if end of list reached
+			System.err.print("A station with" + callSign + "does not exist.");
+		else {		// if desired node found, remove it
+			// link removedNode's previous and next node to each other
+			removedNode.getPrevious().setNext(removedNode.getNext());
+			removedNode.getNext().setPrevious(removedNode.getPrevious());
+		}
+		return removedNode;
 	}
 }
