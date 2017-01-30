@@ -1,11 +1,11 @@
 /* James Garza
- * CS-102
- * 23.01.2017
+ * Login ID: garz6275
+ * CS-102, 23.01.2017
  * 
  * Prog2.java
- * this program gets user's input identify a file that contains stations, adds those 
- * formatted stations into a database, and performs search and print functions on 
- * the database 
+ * this program gets user's input identify a file that contains stations, adds 
+ * those formatted stations into a database, and performs search and print 
+ * functions on the database 
  */
 
 package edu.kettering.cs102.programs;

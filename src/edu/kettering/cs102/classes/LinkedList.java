@@ -48,18 +48,24 @@ public class LinkedList {
 			Node current = head;		// variable to walk through nodes
 			String callSign = newStation.getCallSign();	// get current callSign
 			// when negative, current node passed the correct lexicographic spot 
-			while (current.getStation().getCallSign().compareTo(callSign) < 0 && 
-					current != null) {
+			while (current != null &&
+				   current.getStation().getCallSign().compareTo(callSign) < 0) {
 				current = current.getNext();	// step to next item in list
 			}
 			// if newStation a duplicate, do not add
-			if (current.getStation().getCallSign().compareTo(callSign) == 0) {
-				System.err.print("A station will that call sign already "
-						+ "exists. Please enter another station.");
-			} else if (current == null) {	// reached the end of the list
+			
+			if (current == null) {	// reached the end of the list, append
 				tail.setNext(newNode);		// link tail to new last element
 				newNode.setPrevious(tail);	// link last element to old tail
 				tail = newNode;				// redefine last node
+			} else if (current.getStation().getCallSign() // if duplicate
+												.compareTo(callSign) == 0) {
+				System.err.print("A station will that call sign already "
+						+ "exists. Please enter another station.");
+			} else if (current.getPrevious() == null) { // only 1 node
+				tail.setPrevious(newNode);
+				head = newNode;
+				head.setNext(tail);
 			} else {				// new node is not last element
 				// link previous node to newNode
 				current.getPrevious().setNext(newNode); 

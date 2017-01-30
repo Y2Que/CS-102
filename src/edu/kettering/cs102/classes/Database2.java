@@ -4,7 +4,7 @@
  * 
  * Database2.java
  * the second database class for the second assignment. This class manages
- * adding, sorting, and removing objects to two lined lists
+ * adding, sorting, and removing objects to two doubly liked lists
  */
 
 package edu.kettering.cs102.classes;
