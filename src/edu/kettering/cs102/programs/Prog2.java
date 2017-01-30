@@ -13,6 +13,12 @@ import edu.kettering.cs102.classes.*;
 import java.util.*;
 
 public class Prog2 {
+	final static int SEARCH_CALLSIGN = 1;	// define input command constants
+	final static int SEARCH_FREQ = 2;
+	final static int SEARCH_GENRE = 3;
+	final static int PRINT_ALL = 4;
+	final static int ADD_STATION = 5;
+	final static int EXIT = 9;
 	
 	/* main (inputFile)
 	 * this subroutine takes the inputFile from the user and adds formatted 
@@ -20,8 +26,7 @@ public class Prog2 {
 	 * and print functions on the database.
 	 */
 	public static void main(String[] args) {
-		
-		Database myDatabase = new Database();	// declare and define a database
+		Database2 myDatabase = new Database2();	// declare and define a database
 		String userFile = args[0];				// get input file name from user
 		myDatabase.addStationsFromFile(userFile); // add stations to database
 
@@ -34,6 +39,7 @@ public class Prog2 {
 			System.out.print("| 2 - Search for a frequency  |\n");
 			System.out.print("| 3 - Search for a genre      |\n");
 			System.out.print("| 4 - Print all records       |\n");
+			System.out.print("| 5 - Add station             |\n");
 			System.out.print("| 9 - Exit program            |\n");
 			System.out.print("+-----------------------------+\n");
 			System.out.print("- Choose a command: ");
@@ -46,11 +52,11 @@ public class Prog2 {
 			}
 
 			switch (inputScanner.nextInt()) {	// choose action based on input
-			case 1:								// find station by call sign
+			case SEARCH_CALLSIGN:	// find station by call sign
 				System.out.print("- Enter a call sign: ");
 				myDatabase.printFoundCallSign(inputScanner.next());
 				break;
-			case 2:								// find station by frequency
+			case SEARCH_FREQ:		// find station by frequency
 				String userFreqBand, userFreq;
 				do {	// ask user for freq band until "AM" or "FM" is entered
 					System.out.print("- Enter a frequency band (AM or FM): ");
@@ -67,14 +73,17 @@ public class Prog2 {
 				userFreq = inputScanner.next();	// store valid freq from user
 				myDatabase.printFoundFreq(userFreqBand, userFreq);
 				break;
-			case 3:					// find stations by genre
+			case SEARCH_GENRE:		// find stations by genre
 				System.out.print("- Enter a genre: ");
 				myDatabase.printFoundGenre(inputScanner.next());
 				break;
-			case 4:					// print all stations
+			case PRINT_ALL:			// print all stations
 				myDatabase.printAll();
 				break;
-			case 9:					// exit program
+			case ADD_STATION:
+				myDatabase.addStationCmdLine();
+				break;
+			case EXIT:				// exit program
 				System.out.print("Thank you for your time. Goodbye.");
 				endProgram = true;	// set the endProgam flag
 				break;

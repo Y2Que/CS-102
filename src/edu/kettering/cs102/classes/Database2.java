@@ -3,7 +3,8 @@
  * 23.01.2017
  * 
  * Database2.java
- * 
+ * the second database class for the second assignment. This class manages
+ * adding, sorting, and removing objects to two lined lists
  */
 
 package edu.kettering.cs102.classes;
@@ -12,13 +13,41 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Database2 {
-	LinkedList amList = new LinkedList(); // lists that holds FM Stations
-	LinkedList fmList = new LinkedList(); // lists that holds FM Stations
+	final static int LIST_COUNT = 2;	// number of lists
+	LinkedList amList;					// lists that holds AM Stations
+	LinkedList fmList;					// lists that holds FM Stations
 	
 	/* Constructor
 	 * declare an empty array of Stations with MAX_STATIONS elements
 	 */
-	public Database2() {}
+	public Database2() {
+		amList = new LinkedList();	// lists that holds FM Stations
+		fmList = new LinkedList();	// lists that holds FM Stations
+	}
+	
+	/* addStation(newStation)
+	 * add a Station object to the end of the linked list
+	 */
+	public void addStation (Station newStation) {
+		if (newStation.getFreqBand().toUpperCase().equals("AM"))
+			amList.addNode(newStation);
+		else
+			fmList.addNode(newStation);
+	}
+	
+	/* removeStation ()
+	 * removes a Station object from linked list by call sign
+	 */
+	public Station removeStation () {
+		Node removedNode = amList.head;
+		//
+		//*********************************************************
+		//
+		//
+		//		
+		return removedNode.getStation();
+	}
+	
 	
 	/* addStationsFromFile(fileName)
 	 * takes a file name, reads data from file, and adds new Stations to 
@@ -66,16 +95,14 @@ public class Database2 {
 		}
 		fileScanner.close();	// memory cleanup
 	}
-
-	/* addStation(newStation)
-	 * add a Station object to the end of the array if able
+	
+	/* addStationCmdLine ()
+	 * user adds a Station object to the database
 	 */
-	public void addStation (Station newStation) {
-		if (newStation.getFreqBand().toUpperCase().equals("AM"))
-			amList.addNode(newStation);
-		else
-			fmList.addNode(newStation);
+	public void addStationCmdLine () {
+		
 	}
+	
 	
 	/* printAll()
 	 * loop through every Station in the database a print all info
@@ -100,25 +127,20 @@ public class Database2 {
 	public void printFoundCallSign(String input) {
 		int counter = 0;	// used to count number of matches found
 		input = input.toUpperCase();	// error checking setup
-		Node looper = amList.head;		// first check AM stations
-		// loop that checks all AM stations in amList
-		while (looper != null) {
-			// if call sign found
-			if (looper.getStation().getCallSign().equals(input)) {
-				System.out.println(looper.getStationInfo()); // print info
-				counter++;	// increment number of matches found
+		Node loopNode = amList.head;	// first check AM stations
+		
+		// loop that checks all lists, both AM and FM
+		for (int listCount = 0; listCount < LIST_COUNT; listCount++) {
+			// loop that walks thru each list's nodes
+			while (loopNode != null) {
+				// if call sign found
+				if (loopNode.getStation().getCallSign().equals(input)) {
+					System.out.println(loopNode.getStationInfo()); // print info
+					counter++;	// increment number of matches found
+				}
+			loopNode = loopNode.getNext();	// check next node
 			}
-			looper = looper.getNext();
-		}
-		looper = fmList.head;			// first check AM stations
-		// loop that checks all FM stations in amList
-		while (looper != null) {
-			// if call sign found
-			if (looper.getStation().getCallSign().equals(input)) {
-				System.out.println(looper.getStationInfo()); // print info
-				counter++;	// increment number of matches found
-			}
-			looper = looper.getNext();
+			loopNode = fmList.head;		// next check FM stations
 		}
 		System.out.println("Found matches: " + counter);
 	}
@@ -129,6 +151,7 @@ public class Database2 {
 	 */
 	public void printFoundFreq(String inputFreqBand, String inputFreq) {
 		int counter = 0;		// used to count number of matches found
+		inputFreqBand = inputFreqBand.toUpperCase();	// error checking
 		
 		if (inputFreqBand.equals("AM"))	// if AM, remove last 0
 			inputFreq = inputFreq.substring(0, inputFreq.length() - 1);
@@ -138,19 +161,28 @@ public class Database2 {
 		try {
 			// throws exception for invalid input
 			int inputFreqInt = Integer.parseInt(inputFreq);
-			// loop thru all stations checking for frequency matches
-			for (int index = 0; index < arrayIndex; index++)
-				// if freq matches, continue
-				if (inputFreqInt == database[index].getFreq())
-					// if freqBand also matches, then consider the station found
-					if (inputFreqBand.equals(database[index].getFreqBand())) {
-						// print formatted station data
-						System.out.println(database[index].getStation());
-						counter++;	// increment number of found matches
-					}
+			Node loopNode = amList.head;	// start with AM list
+			
+			// loop that checks all lists, both AM and FM
+			for (int listCount = 0; listCount < LIST_COUNT; listCount++) {
+				// loop thru all stations checking for frequency matches
+				while (loopNode != null) {
+					// if freq matches, continue
+					if (inputFreqInt == loopNode.getStation().getFreq())
+						// if freqBand also matches, consider the station found
+						if (inputFreqBand.equals(
+										loopNode.getStation().getFreqBand())) {
+							// print formatted station data
+							System.out.println(loopNode.getStationInfo());
+							counter++;	// increment number of found matches
+						}
+					loopNode = loopNode.getNext();	// get next node
+				}
+				loopNode = fmList.head;		// next check FM station
+			}	
 			System.out.println("Found matches: " + counter);
 		} catch (NumberFormatException error) { // if frequency is not an usable
-			// user can enter an AM and decimal number, resulting in this error
+			// user can enter AM and decimal number, resulting in this error
 			System.err.print("Invalid input. Frequency must be an integer for "
 							 + "AM or a single decimal for FM.\n");
 		}
@@ -163,15 +195,22 @@ public class Database2 {
 	public void printFoundGenre(String input) {
 		int counter = 0;	// used to count number of matches found
 		input = input.toUpperCase();	// error checking setup
+		Node loopNode = amList.head;	// first check AM stations
 		
-		//loop to go thru all stations
-		for (int index = 0; index < arrayIndex; index++)
-			// check if user's input is contained in station's genre
-			if (database[index].getGenre().toUpperCase().contains(input)) {
-				// print station's formatted information
-				System.out.println(database[index].getStation());
-				counter++;		// increment number of found matches
+		// loop that checks all lists, both AM and FM
+		for (int listCount = 0; listCount < LIST_COUNT; listCount++) {
+			// loop thru all stations checking for frequency matches
+			while (loopNode != null) {
+				// check if user's input is contained in station's genre
+				if (loopNode.getStation().getGenre().toUpperCase()
+															.contains(input)) {
+					// print station's formatted information
+					System.out.println(loopNode.getStationInfo());
+				}
+				loopNode = loopNode.getNext();	// get next node
 			}
+			loopNode = fmList.head;		// next check FM station
+		}
 		// display number of found matches
 		System.out.println("Found matches: " + counter);
 	}
