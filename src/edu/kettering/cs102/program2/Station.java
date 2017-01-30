@@ -7,7 +7,7 @@
  * location, and genre attributes. 
  */
 
-package edu.kettering.cs102.classes;
+package edu.kettering.cs102.program2;
 
 public class Station {
 	String callSign;	// call sign of station

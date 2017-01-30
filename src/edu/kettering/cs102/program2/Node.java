@@ -7,7 +7,7 @@
  * and previous, and the datum variable station.
  */
 
-package edu.kettering.cs102.classes;
+package edu.kettering.cs102.program2;
 
 public class Node {
 	Node previous, next;	// references to indicate next and previous node

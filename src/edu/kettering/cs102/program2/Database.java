@@ -2,17 +2,17 @@
  * CS-102
  * 23.01.2017
  * 
- * Database2.java
+ * Database.java
  * the second database class for the second assignment. This class manages
  * adding, sorting, and removing objects to two doubly liked lists
  */
 
-package edu.kettering.cs102.classes;
+package edu.kettering.cs102.program2;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class Database2 {
+public class Database {
 	final static int LIST_COUNT = 2;	// number of lists
 	LinkedList amList;					// lists that holds AM Stations
 	LinkedList fmList;					// lists that holds FM Stations
@@ -20,7 +20,7 @@ public class Database2 {
 	/* Constructor
 	 * declare an empty array of Stations with MAX_STATIONS elements
 	 */
-	public Database2() {
+	public Database() {
 		amList = new LinkedList();	// lists that holds FM Stations
 		fmList = new LinkedList();	// lists that holds FM Stations
 	}
@@ -108,16 +108,24 @@ public class Database2 {
 	 * loop through every Station in the database a print all info
 	 */
 	public void printAll() {
-		Node current = amList.head;
+		Node current = amList.head;		// start with AM list
+		int counter = 0;				// counts number of records
 		System.out.print("AM stations:\n");
-		while (current != null)
+		while (current != null) {
 			// print formatted string for each station
 			System.out.println(current.getStationInfo());
-		current = fmList.head;
-		System.out.print("\nFM stations:\n");
-		while (current != null)
+			counter++;				// increment number of records
+			current = current.getNext();	// get next node
+		}
+		current = fmList.head;			// next print FM list
+		System.out.print("FM stations:\n");
+		while (current != null) {
 			// print formatted string for each station
 			System.out.println(current.getStationInfo());
+			counter++;				// increment number of records
+			current = current.getNext();	// get next node
+		}
+		System.out.println("Found records: " + counter);
 	}
 	
 	/* printFoundCallSign(input)
@@ -206,6 +214,7 @@ public class Database2 {
 															.contains(input)) {
 					// print station's formatted information
 					System.out.println(loopNode.getStationInfo());
+					counter++;	// increment number of found matches
 				}
 				loopNode = loopNode.getNext();	// get next node
 			}

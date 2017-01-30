@@ -7,7 +7,7 @@
  * frequency, location, and genre attributes
  */
 
-package edu.kettering.cs102.classes;
+package edu.kettering.cs102.program2;
 
 public class LinkedList {
 	Node head, tail;
@@ -60,13 +60,14 @@ public class LinkedList {
 				tail = newNode;				// redefine last node
 			} else if (current.getStation().getCallSign() // if duplicate
 												.compareTo(callSign) == 0) {
-				System.err.print("A station will that call sign already "
-						+ "exists. Please enter another station.");
-			} else if (current.getPrevious() == null) { // only 1 node
-				tail.setPrevious(newNode);
+				System.err.print("A station with that call sign already "
+						+ "exists. Unable to add station:\n"
+						+ newStation.getStation() + "\n");
+			} else if (current == head) { // adding to front of list
+				head.setPrevious(newNode);
+				newNode.setNext(head);
 				head = newNode;
-				head.setNext(tail);
-			} else {				// new node is not last element
+			} else {				// newNode is not first or last node
 				// link previous node to newNode
 				current.getPrevious().setNext(newNode); 
 				current.setPrevious(newNode);	// link current node to newNode

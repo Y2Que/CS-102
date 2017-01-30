@@ -7,10 +7,12 @@
  * and allow the user to perform search and print methods on Stations.
  */
 
-package edu.kettering.cs102.classes;
+package edu.kettering.cs102.program1;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+
+import edu.kettering.cs102.program2.Station;
 
 public class Database {
 	// define max number of stations within the database

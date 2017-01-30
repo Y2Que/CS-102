@@ -8,8 +8,7 @@
  * functions on the database 
  */
 
-package edu.kettering.cs102.programs;
-import edu.kettering.cs102.classes.*;
+package edu.kettering.cs102.program2;
 import java.util.*;
 
 public class Prog2 {
@@ -26,7 +25,7 @@ public class Prog2 {
 	 * and print functions on the database.
 	 */
 	public static void main(String[] args) {
-		Database2 myDatabase = new Database2();	// declare and define a database
+		Database myDatabase = new Database();	// declare and define a database
 		String userFile = args[0];				// get input file name from user
 		myDatabase.addStationsFromFile(userFile); // add stations to database
 

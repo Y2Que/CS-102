@@ -8,8 +8,7 @@
  * the database 
  */
 
-package edu.kettering.cs102.programs;
-import edu.kettering.cs102.classes.*;
+package edu.kettering.cs102.program1;
 import java.util.*;
 
 public class Prog1 {
