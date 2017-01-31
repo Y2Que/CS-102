@@ -104,5 +104,22 @@ class LinkedList implements ListInterface {
 			return current.getDatum();
 		return get(index - 1, current.getNext());	// recursive call
 	}
+	
+	@Override
+	public void add(int index, Node item) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public Node remove(int index) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void removeAll() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
 	

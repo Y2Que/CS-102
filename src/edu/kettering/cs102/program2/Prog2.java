@@ -47,7 +47,7 @@ public class Prog2 {
 					System.err.print("Invalid input. Please"
 									  + " choose a number shown above.\n");
 					System.out.print("- Choose a command: ");
-					inputScanner.next();			// discard invalid value
+					inputScanner.next();	// discard invalid value
 			}
 
 			switch (inputScanner.nextInt()) {	// choose action based on input

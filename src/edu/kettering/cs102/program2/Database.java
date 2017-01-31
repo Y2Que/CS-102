@@ -100,7 +100,41 @@ public class Database {
 	 * user adds a Station object to the database
 	 */
 	public void addStationCmdLine () {
+		System.out.print("Please enter your station in the following "
+				+ "format:\ncall_sign/frequency/frequency_band/location/"
+				+ "genre\nEnter your station: ");
+		Scanner inputScanner = new Scanner(System.in);
+		String inputString = inputScanner.nextLine();
+		String inputData[] = inputString.split("/");
 		
+		try {	// check for invalid input
+			String callSign = inputData[0];		// 1st data: Station call sign
+			String freqStr = inputData[1];		// 2nd data: Station frequency
+			String freqBand = inputData[2];		// 3rd data: Station freq band
+			String location = inputData[3];		// 4th data: location of Station
+			String genre = inputData[4];		// 5th data: Station genre
+			
+			if (freqBand.equals("AM"))	// if AM, remove last 0
+				freqStr = freqStr.substring(0, freqStr.length() - 1);
+			else	// if FM, remove dot "."
+				freqStr = freqStr.replace(".", "");
+			
+			// 3rd data: Station frequency converted from String to integer
+			int freq = Integer.parseInt(freqStr);
+			// create new Station 
+			Station myStation = new Station(callSign, freqBand, freq, 
+								location, genre);
+			addStation(myStation);	// add Station to database
+		} catch (NumberFormatException error) {	// if non-int in 3rd column
+			System.err.print("ERROR: Could not add Station since file "
+						+ "contains non-integer data is the 3rd column.\n");
+
+		} catch (ArrayIndexOutOfBoundsException error) { // invalid input
+			System.err.print("ERROR: Invalid input, could not add Station.\n");
+		}
+		//inputScanner.close();	// memory cleanup
+		/******************************************************************/
+		// breaks program if left in
 	}
 	
 	
