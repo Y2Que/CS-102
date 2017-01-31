@@ -26,7 +26,15 @@ public class Prog2 {
 	 */
 	public static void main(String[] args) {
 		Database myDatabase = new Database();	// declare and define a database
-		String userFile = args[0];				// get input file name from user
+		String userFile = null;			// holds user input file name
+		
+		try {
+			userFile = args[0];		// get input file name from user
+		} catch (ArrayIndexOutOfBoundsException error) {
+			System.err.print("No arguments given to program.");
+			System.exit(1);
+		}
+		
 		myDatabase.addStationsFromFile(userFile); // add stations to database
 
 		Scanner inputScanner = new Scanner(System.in);	// read input from user

@@ -105,21 +105,90 @@ class LinkedList implements ListInterface {
 		return get(index - 1, current.getNext());	// recursive call
 	}
 	
-	@Override
-	public void add(int index, Node item) {
-		// TODO Auto-generated method stub
-		
+	public void add(int index, MyObject datum) {
+		head = add(index, datum, head);
 	}
-	@Override
-	public Node remove(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public void removeAll() {
-		// TODO Auto-generated method stub
-		
-	}
-
-}
 	
+	/* recursive is much less code, elegant, "beautiful code"
+	 * only the base case is where we actually add, all others are calls
+	 */
+	private Node add(int index, MyObject datum, Node current) {
+		if (index == 0) {
+			Node splice = new Node();
+			splice.setDatum(datum);
+			splice.setNext(current);	// create new head of list
+			return splice;				// return new head
+		}
+		if (current == null) { 			// fell off the list
+			throw new IndexOutOfBoundsException();
+		}
+		current.setNext(add(index-1, datum, current.getNext()));
+		return current;			// head hasn't changed
+	}
+	
+	public MyObject remove(int index) {
+		MyObject ofTheKing = get(index);	// get datum
+		head = remove (index, head);		// define head?
+		return ofTheKing;					// return datum
+	}
+	
+	/* less lines of code than loops
+	 * 
+	 */
+	private Node remove (int index, Node current) {
+		if (current == null)
+			throw new IndexOutOfBoundsException();
+		if (index == 0) {
+			return current.getNext();
+		}
+		current.setNext(remove(index-1, current.getNext()));
+		return current;
+	}
+	
+	public void removeAll() {
+		head = null;
+	}
+}
+
+
+/* ---Stacks
+ * a stack is a list in which all add and remove operations occur on one end
+ * of the list
+ * Examples: stack of paper, method call stack, cafeteria trays, post script
+ * Operations: push(), pop(), peek()
+ * 
+ * ---Implementations
+ * 1) Linked list, head is top of stack
+ * 2) Array, end of array is top of stack
+ * > Which is better? Depends on application, usage. Arrays have a max size
+ * but Linked Lists hace overhead of memory access time
+ * 
+ * Applications
+ * 1) Parenthesis Checker: [3+(5*4)]-(6*8
+ * 		while (input.hasNext()) {
+ * 			token = input.next();
+ * 			if (token.isLeft())
+ * 				stack.push(token);
+ * 			else if (token.isRight())
+ * 				match(token, stack.pop());
+ * 		}
+ * 		return stack.isEmpty();
+ * 2) RPN (Reverse Polish Notation)
+ * 	3 + 4 * 5 = 2 4 5 * +
+ * (3 + 4)* 5 = 3 4 + 5 *
+ * 		while (input.hasNext()) {
+ * 			token = input.getNext();
+ * 			if (token.isValue())
+ * 				stack.push(token);
+ * 			else if (token.isOp())
+ * 				stack.push(apply(token,stack.pop(),stack()));
+ * 		}
+ * Polish Notation: 23 = + * 4 5 3
+ *                       +(*(4,5),3);
+ *                    add(multiply(4,5),3);		// same as method syntax!
+ */
+
+
+
+
+
