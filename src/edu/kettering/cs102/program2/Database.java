@@ -35,20 +35,6 @@ public class Database {
 			fmList.addNode(newStation);
 	}
 	
-	/* removeStation ()
-	 * removes a Station object from linked list by call sign
-	 */
-	public Station removeStation () {
-		Node removedNode = amList.head;
-		//
-		//*********************************************************
-		//
-		//
-		//		
-		return removedNode.getStation();
-	}
-	
-	
 	/* addStationsFromFile(fileName)
 	 * takes a file name, reads data from file, and adds new Stations to 
 	 * database if the data is formatted correctly. '/' is used to separate 
@@ -126,8 +112,9 @@ public class Database {
 								location, genre);
 			addStation(myStation);	// add Station to database
 		} catch (NumberFormatException error) {	// if non-int in 3rd column
-			System.err.print("ERROR: Could not add Station since file "
-						+ "contains non-integer data is the 3rd column.\n");
+			System.err.print("ERROR: Could not add Station since input "
+						+ "contains mismatched data formats between frequency "
+						+ "and frequency_band.\n");
 
 		} catch (ArrayIndexOutOfBoundsException error) { // invalid input
 			System.err.print("ERROR: Invalid input, could not add Station.\n");
