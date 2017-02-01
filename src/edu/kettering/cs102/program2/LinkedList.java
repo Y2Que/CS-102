@@ -1,22 +1,18 @@
 /* James Garza
- * CS-102
- * 23.01.2017
- * 
+ * Login ID: garz6275
+ * CS-102, Winter 28.01.2017
+ * Program Assignment 2
  * LinkedList.java
- * this class defines a Station object with call sign, frequency band,
- * frequency, location, and genre attributes
+ * this class defines a doubly linked list that holds Node objects
  */
 
 package edu.kettering.cs102.program2;
 
 public class LinkedList {
-	Node head, tail;
+	Node head, tail;		// references to the beginning and end of the list
 	
 	/* Constructor
-	 * required parameters to create a Station instance: callSign is the 
-	 * abbreviation of the station, freqBand is either AM or FM, freq is the 
-	 * numeric frequency, location is the home of the station, and genre is what
-	 * you can hear about on the Station
+	 * initialize an empty doubly linked list
 	 */	
 	public LinkedList () {
 		head = null;
@@ -35,30 +31,29 @@ public class LinkedList {
 	public void setHead(Node input) { head = input;	}
 	public void setTail(Node input) { tail = input;	}
 	
-	/* addStation(Station newStation)
-	 * adds a new node to the linked list and maintains the lexicographic sort
-	 * by call sign of the station
+	/* addStation (newStation)
+	 * adds a new node to the AM or FM linked list and maintains the 
+	 * lexicographic sort by call sign 
 	 */
 	public void addNode(Station newStation) {
 		Node newNode = new Node(null, null, newStation); // create a new node
 		if (head == null) {		// if empty list
-			head = newNode;
-			tail = head;
-		} else {				// if not empty list
-			Node current = head;		// variable to walk through nodes
+			head = newNode;		// newNode is new head
+			tail = head;		// newNode is also new tail
+		} else {		// if not empty list
+			Node current = head;	// variable to walk through nodes
 			String callSign = newStation.getCallSign();	// get current callSign
-			// when negative, current node passed the correct lexicographic spot 
+			// when compareTo value is negative, 
+			// current node has passed the correct lexicographic spot
 			while (current != null &&
-				   current.getStation().getCallSign().compareTo(callSign) < 0) {
+			  current.getStation().getCallSign().compareTo(callSign) < 0) {
 				current = current.getNext();	// step to next item in list
 			}
-			// if newStation a duplicate, do not add
-			
 			if (current == null) {	// reached the end of the list, append
 				tail.setNext(newNode);		// link tail to new last element
 				newNode.setPrevious(tail);	// link last element to old tail
 				tail = newNode;				// redefine last node
-			} else if (current.getStation().getCallSign() // if duplicate
+			} else if (current.getStation().getCallSign() // if dup, don't add
 												.compareTo(callSign) == 0) {
 				System.err.print("A station with that call sign already "
 						+ "exists. Unable to add station:\n"
@@ -67,7 +62,7 @@ public class LinkedList {
 				head.setPrevious(newNode);
 				newNode.setNext(head);
 				head = newNode;
-			} else {				// newNode is not first or last node
+			} else {	// newNode is not first or last node
 				// link previous node to newNode
 				current.getPrevious().setNext(newNode); 
 				current.setPrevious(newNode);	// link current node to newNode
@@ -75,23 +70,23 @@ public class LinkedList {
 		}
 	}
 	
-	/* removeNode(callSign)
-	 * search for station by call sign, remove it from list, and return it
+	/* removedNode removeNode(callSign)
+	 * search for station by callSign, remove from list, and return removedNode
 	 */
 	public Node removeNode(String callSign) {
 		Node removedNode = head; 	// finds node to be removed
 		// look for desired node by call sign, move next until end of list
 		while (!removedNode.getStation().getCallSign().equals(callSign) && 
-				removedNode != null)
+													removedNode != null)
 			removedNode = removedNode.getNext();	// move to next node
 		
 		if (removedNode == null)	// if end of list reached
-			System.err.print("A station with" + callSign + "does not exist.");
+			System.err.print("The station '" + callSign + "' does not exist.");
 		else {		// if desired node found, remove it
 			// link removedNode's previous and next node to each other
 			removedNode.getPrevious().setNext(removedNode.getNext());
 			removedNode.getNext().setPrevious(removedNode.getPrevious());
 		}
-		return removedNode;
+		return removedNode;		// return removed node
 	}
 }

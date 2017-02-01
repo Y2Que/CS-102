@@ -1,10 +1,10 @@
 /* James Garza
- * CS-102
- * 17.01.2017
- * 
+ * Login ID: garz6275
+ * CS-102, Winter 17.01.2017
+ * Program Assignment 2
  * Station.java
- * this class defines a Station object with call sign, frequency band, frequency, 
- * location, and genre attributes. 
+ * this class defines a Station object with call sign, frequency band, 
+ * frequency, location, and genre attributes. 
  */
 
 package edu.kettering.cs102.program2;

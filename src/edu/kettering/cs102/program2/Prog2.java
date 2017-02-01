@@ -1,11 +1,11 @@
 /* James Garza
  * Login ID: garz6275
- * CS-102, 23.01.2017
- * 
+ * CS-102, Winter 28.01.2017
+ * Program Assignment 2
  * Prog2.java
- * this program gets user's input identify a file that contains stations, adds 
- * those formatted stations into a database, and performs search and print 
- * functions on the database 
+ * this program takes user's input file that contains stations, adds those
+ * formatted stations into a database, and performs search and print functions
+ * on the database 
  */
 
 package edu.kettering.cs102.program2;
@@ -19,23 +19,23 @@ public class Prog2 {
 	final static int ADD_STATION = 5;
 	final static int EXIT = 9;
 	
-	/* main (inputFile)
-	 * this subroutine takes the inputFile from the user and adds formatted 
-	 * stations within that file to a database. The user can then perform search
-	 * and print functions on the database.
+	/* main (args[0])
+	 * this subroutine takes the an input file (args[0]) from the user and 
+	 * adds formatted stations in that file to a database. The user can then
+	 * perform search, print, and additional add functions on the database.
 	 */
 	public static void main(String[] args) {
 		Database myDatabase = new Database();	// declare and define a database
-		String userFile = null;			// holds user input file name
+		String userFile = null;					// holds user input file name
 		
 		try {
 			userFile = args[0];		// get input file name from user
-		} catch (ArrayIndexOutOfBoundsException error) {
-			System.err.print("No arguments given to program.");
-			System.exit(1);
+			// add Stations from file to database
+			myDatabase.addStationsFromFile(userFile);
+		} catch (ArrayIndexOutOfBoundsException error) {	// if no file given
+			System.err.print("No arguments given to program, no files "
+					+ "currently in the database.\n");
 		}
-		
-		myDatabase.addStationsFromFile(userFile); // add stations to database
 
 		Scanner inputScanner = new Scanner(System.in);	// read input from user
 		boolean endProgram = false;	// used to determine when to exit program
@@ -80,14 +80,14 @@ public class Prog2 {
 				userFreq = inputScanner.next();	// store valid freq from user
 				myDatabase.printFoundFreq(userFreqBand, userFreq);
 				break;
-			case SEARCH_GENRE:		// find stations by genre
+			case SEARCH_GENRE:		// find Stations by genre
 				System.out.print("- Enter a genre: ");
 				myDatabase.printFoundGenre(inputScanner.next());
 				break;
-			case PRINT_ALL:			// print all stations
+			case PRINT_ALL:			// print all Stations
 				myDatabase.printAll();
 				break;
-			case ADD_STATION:
+			case ADD_STATION:		// add Station form command line
 				myDatabase.addStationCmdLine();
 				break;
 			case EXIT:				// exit program

@@ -1,10 +1,10 @@
 /* James Garza
- * CS-102
- * 23.01.2017
- * 
+ * Login ID: garz6275
+ * CS-102, Winter 28.01.2017
+ * Program Assignment 2
  * Node.java
  * this class defines a Node object with two reference variables called next
- * and previous, and the datum variable station.
+ * and previous, and the datum variable (a Station object).
  */
 
 package edu.kettering.cs102.program2;
@@ -37,7 +37,7 @@ public class Node {
 	public void setNext(Node input)			{ next		= input; }
 	public void setStation(Station input)	{ station	= input; }
 	
-	/* printStation ()
+	/* getStationInfo ()
 	 * returns all info about the station in a formatted string
 	 */
 	public String getStationInfo() {

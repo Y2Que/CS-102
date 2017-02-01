@@ -1,10 +1,10 @@
 /* James Garza
- * CS-102
- * 23.01.2017
- * 
+ * Login ID: garz6275
+ * CS-102, Winter 28.01.2017
+ * Program Assignment 2
  * Database.java
  * the second database class for the second assignment. This class manages
- * adding, sorting, and removing objects to two doubly liked lists
+ * adding, sorting, and removing objects from two doubly liked lists
  */
 
 package edu.kettering.cs102.program2;
@@ -25,8 +25,8 @@ public class Database {
 		fmList = new LinkedList();	// lists that holds FM Stations
 	}
 	
-	/* addStation(newStation)
-	 * add a Station object to the end of the linked list
+	/* addStation (newStation)
+	 * add a Station object to either linked list
 	 */
 	public void addStation (Station newStation) {
 		if (newStation.getFreqBand().toUpperCase().equals("AM"))
@@ -35,9 +35,9 @@ public class Database {
 			fmList.addNode(newStation);
 	}
 	
-	/* addStationsFromFile(fileName)
-	 * takes a file name, reads data from file, and adds new Stations to 
-	 * database if the data is formatted correctly. '/' is used to separate 
+	/* addStationsFromFile (fileName)
+	 * takes a string fileName, reads from file, and adds new Stations to 
+	 * linked lists if the data is formatted correctly. '/' is used to separate 
 	 * data elements on one line. The correct format of file data is:
 	 * callSign/frequencyBand/frequency/location/genre
 	 */
@@ -76,7 +76,6 @@ public class Database {
 			} catch (NumberFormatException error) {	// if non-int in 3rd column
 				System.err.print("ERROR: Could not add Station since file "
 							+ "contains non-integer data is the 3rd column.\n");
-				error.printStackTrace();	// error information
 			}
 		}
 		fileScanner.close();	// memory cleanup
@@ -86,12 +85,13 @@ public class Database {
 	 * user adds a Station object to the database
 	 */
 	public void addStationCmdLine () {
+		// prompt user to enter a Station
 		System.out.print("Please enter your station in the following "
 				+ "format:\ncall_sign/frequency/frequency_band/location/"
 				+ "genre\nEnter your station: ");
-		Scanner inputScanner = new Scanner(System.in);
-		String inputString = inputScanner.nextLine();
-		String inputData[] = inputString.split("/");
+		Scanner inputScanner = new Scanner(System.in);	// Scanner to read input
+		String inputString = inputScanner.nextLine();	// get user's input
+		String inputData[] = inputString.split("/");	// divide user's input
 		
 		try {	// check for invalid input
 			String callSign = inputData[0];		// 1st data: Station call sign
@@ -100,18 +100,21 @@ public class Database {
 			String location = inputData[3];		// 4th data: location of Station
 			String genre = inputData[4];		// 5th data: Station genre
 			
+			callSign = callSign.toUpperCase();	// error checking setup
+			freqBand = freqBand.toUpperCase();	// error checking setup
+			
 			if (freqBand.equals("AM"))	// if AM, remove last 0
 				freqStr = freqStr.substring(0, freqStr.length() - 1);
-			else	// if FM, remove dot "."
+			else	// if FM, remove decimal '.'
 				freqStr = freqStr.replace(".", "");
 			
-			// 3rd data: Station frequency converted from String to integer
+			// Station frequency converted from String to integer
 			int freq = Integer.parseInt(freqStr);
 			// create new Station 
 			Station myStation = new Station(callSign, freqBand, freq, 
 								location, genre);
 			addStation(myStation);	// add Station to database
-		} catch (NumberFormatException error) {	// if non-int in 3rd column
+		} catch (NumberFormatException error) {	// if non-int in 2nd field
 			System.err.print("ERROR: Could not add Station since input "
 						+ "contains mismatched data formats between frequency "
 						+ "and frequency_band.\n");
@@ -119,9 +122,6 @@ public class Database {
 		} catch (ArrayIndexOutOfBoundsException error) { // invalid input
 			System.err.print("ERROR: Invalid input, could not add Station.\n");
 		}
-		//inputScanner.close();	// memory cleanup
-		/******************************************************************/
-		// breaks program if left in
 	}
 	
 	
@@ -129,28 +129,28 @@ public class Database {
 	 * loop through every Station in the database a print all info
 	 */
 	public void printAll() {
-		Node current = amList.head;		// start with AM list
-		int counter = 0;				// counts number of records
+		Node current = amList.head;			// start with AM list
+		int counter = 0;					// counts number of records
 		System.out.print("AM stations:\n");
 		while (current != null) {
 			// print formatted string for each station
 			System.out.println(current.getStationInfo());
-			counter++;				// increment number of records
+			counter++;						// increment number of records
 			current = current.getNext();	// get next node
 		}
-		current = fmList.head;			// next print FM list
+		current = fmList.head;				// next print FM list
 		System.out.print("FM stations:\n");
 		while (current != null) {
 			// print formatted string for each station
 			System.out.println(current.getStationInfo());
-			counter++;				// increment number of records
+			counter++;						// increment number of records
 			current = current.getNext();	// get next node
 		}
 		System.out.println("Found records: " + counter);
 	}
 	
-	/* printFoundCallSign(input)
-	 * searches all stations and finds all call signs that match the user's
+	/* printFoundCallSign (input)
+	 * searches all Stations and prints all call signs that match the user's
 	 * input string
 	 */
 	public void printFoundCallSign(String input) {
@@ -165,17 +165,17 @@ public class Database {
 				// if call sign found
 				if (loopNode.getStation().getCallSign().equals(input)) {
 					System.out.println(loopNode.getStationInfo()); // print info
-					counter++;	// increment number of matches found
+					counter++;				// increment number of matches found
 				}
 			loopNode = loopNode.getNext();	// check next node
 			}
-			loopNode = fmList.head;		// next check FM stations
+			loopNode = fmList.head;			// next check FM stations
 		}
 		System.out.println("Found matches: " + counter);
 	}
 	
 	/* printFoundFreq(inputFreqBand, inputFreq)
-	 * searches all stations and finds all frequencies that contain the user's
+	 * searches all stations and prints all frequencies that contain the user's
 	 * input frequency and frequency band
 	 */
 	public void printFoundFreq(String inputFreqBand, String inputFreq) {
@@ -217,8 +217,8 @@ public class Database {
 		}
 	}
 	
-	/* printFoundGenre(input)
-	 * searches all stations and finds all genres that contain the user's
+	/* printFoundGenre (input)
+	 * searches all Stations and prints all genres that contain the user's
 	 * input string
 	 */
 	public void printFoundGenre(String input) {
@@ -239,7 +239,7 @@ public class Database {
 				}
 				loopNode = loopNode.getNext();	// get next node
 			}
-			loopNode = fmList.head;		// next check FM station
+			loopNode = fmList.head;				// next check FM station
 		}
 		// display number of found matches
 		System.out.println("Found matches: " + counter);
