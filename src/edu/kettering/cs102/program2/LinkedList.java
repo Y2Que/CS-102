@@ -63,9 +63,14 @@ public class LinkedList {
 				newNode.setNext(head);
 				head = newNode;
 			} else {	// newNode is not first or last node
+				// link newNode to previous node
+				newNode.setPrevious(current.getPrevious());
 				// link previous node to newNode
-				current.getPrevious().setNext(newNode); 
-				current.setPrevious(newNode);	// link current node to newNode
+				current.getPrevious().setNext(newNode);
+				// link newNode to current node
+				newNode.setNext(current);
+				// link current node to newNode
+				current.setPrevious(newNode);
 			}
 		}
 	}

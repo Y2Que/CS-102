@@ -1,0 +1,66 @@
+WTAC/FM/897/Burton/Christian Contemporary
+WDVD/FM/963/Detroit/Hot AC
+WFLT/AM/142/Flint/Gospel Music
+WFNT/AM/147/Flint/News, Talk
+CBE/AM/155/Windsor/Public Radio
+WXYT/FM/971/Detroit/Sports
+WJIM/FM/975/Lansing/Top-40
+WJLB/FM/979/Detroit/Hip Hop
+WKCQ/FM/981/Saginaw/Country
+WDZH/FM/987/Detroit/Top-40
+WRSR/FM/1039/Owosso/Classic Rock
+WDMK/FM/1059/Detroit/Urban Contemporary
+WAKL/FM/1063/Linden/Christian Contemporary
+WDTW/FM/1067/Detroit/Classic Rock
+WCRZ/FM/1079/Flint/Adult Contemporary
+WRDT/AM/56/Monroe/Religious
+WSNL/AM/60/Flint/Religious
+CFCO/AM/63/Chatham/Country
+WMIC/AM/66/Sandusky/Country
+WNZK/AM/69/Dearborn Heights/Ethnic
+CHYR/AM/71/Leamington/Hot AC
+WVFN/AM/73/East Lansing/Sports
+WJR/AM/76/Detroit/News, Talk
+CKLW/AM/80/Windsor/News, Talk
+WKAR/AM/87/East Lansing/Public Radio
+WFDF/AM/91/Farmington Hills/Talk
+WWJ/AM/95/Detroit/News
+WKHM/AM/97/Jackson/Country
+WDEO/AM/99/Ypsilanti/Religious
+WUFL/AM/103/Sterling Heights/Religious
+WTKA/AM/105/Ann Arbor/Sports
+CHOK/AM/107/Sarnia/Adult Contemporary
+WKAR/FM/905/East Lansing/Public Radio
+WFUM/FM/911/Flint/Public Radio
+WUOM/FM/917/Ann Arbor/Public Radio
+WDZZ/FM/927/Flint/Urban Contemporary
+WKQI/FM/955/Detroit/Top-40
+WHNN/FM/961/Bay City/Adult Contemporary
+WOAP/AM/108/Owosso/Adult Hits
+WDFN/AM/113/Detroit/Sports
+WCXI/AM/116/Fenton/Oldies
+WOMC/FM/1043/Detroit/Classic Hits
+WMGC/FM/1051/Detroit/Hip Hop
+WWCK/FM/1055/Flint/Top-40
+WXLA/AM/118/Dimondale/Nostalgia
+WCHB/AM/120/Taylor/Talk
+WMPC/AM/123/Lapeer/Religious
+WXYT/AM/127/Detroit/Sports
+WDRQ/FM/931/Detroit/Country
+WHMI/FM/935/Howell/Classic Hits
+WCSX/FM/947/Birmingham/Classic Rock
+WMMQ/FM/949/East Lansing/Classic Rock
+WFBE/FM/951/Flint/Country
+WTRX/AM/133/Flint/Sports
+WFMK/FM/991/East Lansing/Adult Contemporary
+WYCD/FM/995/Detroit/Country
+WNIC/FM/1003/Dearborn/Adult Contemporary
+WITL/FM/1007/Lansing/Country
+WRIF/FM/1011/Detroit/Rock
+WDET/FM/1019/Detroit/Public Radio
+WIOG/FM/1025/Bay City/Top-40
+WPZR/FM/1027/Mount Clemens/Gospel Music
+WWWW/FM/1029/Ann Arbor/Country
+WMUZ/FM/1035/Detroit/Christian Contemporary
+WWCK/AM/157/Flint/Talk
+WAAM/AM/160/Ann Arbor/News, Talk
