@@ -14,7 +14,7 @@ public class Notes {
 	
 	public boolean binSearch(int[] data, int start, int end, int target) {
 		if (start > end) return false;
-		//int mid = (start + end) / 2; 			// bug, max size array overflows to negative number
+		//int mid = (start + end) / 2; 	// max size array overflows to neg num
 		int mid = start + (end - start) / 2;		// same as (start + end) / 2
 		if (data[mid] == target) return true;
 		if (data[mid] < target)
@@ -187,6 +187,222 @@ class LinkedList implements ListInterface {
  *                       +(*(4,5),3);
  *                    add(multiply(4,5),3);		// same as method syntax!
  */
+
+// 03.02.2017
+
+/* Queues
+ * a list in which add & remove operations occur at opposite ends of the list
+ * ex - standing in line
+ * 
+ * Implementations
+ * 1) Linked List
+ *    - end reference is helpful here
+ * 2) Arrays
+ *    - manipulating end of array is easy, front of array is hard
+ *    - can just move front of array pointer instead of rolling all elements for
+ *      manipulating the front of the array
+ *    - can think about an array as circular
+ *    	i.e 
+ *    		front = (front + 1) % 13;	// assuming 13 array slots
+ *    		back = (back + 1 % 13;
+ */
+
+// END OF MIDTERM MATERIAL
+/******************************************************************************/
+
+/* Generics
+ * LinkedList<T>
+ * 		LinkedList <Station> mList = ...;
+ * 		LinkedList <Apple> basket = ...;
+ */
+
+/* Collections - a Java object that groups multiple items together
+ * Collection Framework - a unified architecture for representing and 
+ * 						  maintaining collections
+ * Parts:
+ * 	- interfaces
+ *  - implementation
+ *  - utilities
+ *
+ * Collections
+ * - set		// unordered collection of items that forbids duplicates
+ * - list		// ordered collection of items that allows dups, recognizable
+ * - queue
+ * - map		// collection of key value pairs, maintenance done with key
+ * 
+ * Collections:
+ * - int size();
+ * - boolean isEmpty();
+ * - boolean contains(Object item);
+ * > boolean add(Object item);
+ * > boolean remove(Object item);
+ * - boolean containsAll(Collection other);
+ * > boolean addAll(Collection);
+ * > boolean removeAll(Collection other);
+ * > boolean retainAll(Collection other);
+ * > void clear();
+ * - Object[] toArray();
+ */
+
+/* Enhanced-For Loop ("For-Each Loop")
+ * To print all items in a list:
+ * - Typical for loop:
+ *		for (int pos=0; pos<myLisy.size(); pos++)
+ * 			System.out.println(myList.get(pos));
+ * - Enhanced for loop:
+ * 		for (Object item: myList) {
+ * 			System.out.println(item);
+ * 		}
+ * - do not alter the list while in the enhanced for loop, bad things happen
+ * - arrays support this syntax
+ */
+
+/* Iterator
+ * Every Collection object has a method "iterator()" which returns a new object
+ * from this interface:
+ * 		public interface Iterator<T> {
+ * 			boolean hasNext();
+ * 			T next();
+ * 			void remove();	// removes object that hasNext grabbed
+ * 		} 
+ * if you're in a Iterator and you change the type, discard the Iterator
+ * and get another one
+ */
+
+/* List
+ * - T get(int index);
+ * > T set(int index, T item);
+ * > void add(int index, T item);
+ * > T remove(int inedx);
+ * > boolean addAll(int index, Collection other);
+ * - int inedxOf(Object target);
+ * - int LastIndexOf(Object target);
+ */
+
+/* ListIterator()
+ * - boolean hasNext();
+ * - T next();
+ * - boolean hasPrevious();
+ * - T previous();
+ * - int nextInt();
+ * - int previousIndex();
+ * - void remove();
+ * - void set(T item);
+ * - void add(T item);
+ * don't modify 2 things simultaneously or bad things happen
+ */
+
+/* Implementations
+ * - java.util.ArrayList
+ * - java.util.LinkedList
+ */
+
+/* Debugging
+ * - Add code to help you debug (add utility routines)
+ * 		~ print methods
+ * 		~ top-down design with stubs
+ * 		~ bottom-up design with drivers
+ * - Plan your test data
+ * 		~ check boundry conditions
+ * 		~ try "white box" (code coverage) testing
+ * 		~ the "cat on the keyboard"
+ */
+
+// 14.02.2017
+/* Binary Search Trees                                 o      - root
+ * - a tree may be define recursively as:            /   \
+ *   - the empty tree                               o     o   - (parent)
+ *   - the node attached to one or more trees i.e. / \   / \
+ * ~ a node may have many children, but AT MOST   o   o o   o - leaves (child)
+ *   one parent
+ * = a binary tree is a tree where every node has (at most/exactly) 2 children
+ * = a binary search tree is a binary tree in which the following properties
+ *   hold for all nodes:
+ *   - values stores in the left subtree of a node are less than the value
+ *     in the node
+ *   - values stores in the right subtree of a node are greater than the value
+ *     in the node                            (57)
+ *                                           /    \
+ *                                        (25)    (75)
+ *                                       /   \    /   \
+ *                                    (12)  (37)(62)  (87)
+ *                                       
+ */
+
+class TreeNode<T> {
+	T datum;
+	TreeNode<T> left;
+	TreeNode<T> right;
+	
+	// setter methods
+	public void setDatum (T input)           { datum = input; }
+	public void setLeft  (TreeNode<T> input) { left  = input; }
+	public void setRight (TreeNode<T> input) { right = input; }
+	
+	// getter methods
+	public T getDatum()           { return datum; }
+	public TreeNode<T> getLeft()  { return left;  }
+	public TreeNode<T> getRight() { return right; }
+}
+
+// generic types have ugly syntax
+class Tree<T extends Comparable<? super T>> {
+	
+	TreeNode<T> root;
+	public Tree() { root = null; }
+	
+	public boolean search (T target) {
+		TreeNode<T> current = root;
+		while (current != null) {
+			if (current.getDatum().equals(target))
+				return true;
+			if (current.getDatum().compareTo(target) < 0)
+				current = current.getRight();
+			else current = current.getLeft();
+		}
+		return false;
+	}
+	
+	public boolean searchRecursive (T target) {
+		return search(target, root);
+	}
+	private boolean search (T target, TreeNode<T> current) {
+		if (current == null)
+			return false;
+		if (current.getDatum().equals(target))
+			return search(target, current.getRight());
+		else 
+			return search(target, current.getLeft());
+	}
+	
+	// add duplicates to left node
+	public void add (T target) {
+		TreeNode<T> current = root;
+		TreeNode<T> prev = null;
+		
+		while (current != null) {
+			prev = current;
+			if (current.getDatum().compareTo(target) < 0)
+				current = current.getRight();
+			else
+				current = current.getLeft();
+		}
+		
+		// create new leaf
+		TreeNode<T> leaf = new TreeNode<T>();
+		leaf.setDatum(target);
+		leaf.setLeft(null);
+		leaf.setRight(null);
+		
+		if (prev == null)
+			root = leaf;
+		else if (prev.getDatum().compareTo(target) < 0)
+			prev.setRight(leaf);
+		else 
+			prev.setLeft(leaf);
+	}
+}
+
 
 
 

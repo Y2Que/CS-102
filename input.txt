@@ -1,7 +1,7 @@
 WJR/AM/76/Detroit/talk, sports
 WUOW/FM/911/Flint/national public radio, talk
 WTRX/AM/133/Flint/sports
-WSGN/FM/997/Midland/religious
+WUGN/AM/997/Midland/religious
 WUGN/FM/997/Midland/religious
 WWJ/AM/95/Detroit/news
 WKCQ/FM/981/Saginaw/country
