@@ -1,10 +1,10 @@
 /* James Garza
  * Login ID: garz6275
- * CS-102, Winter 28.01.2017
- * Program Assignment 2
+ * CS-102, Winter 14.02.2017
+ * Program Assignment 3
  * Database.java
- * the second database class for the second assignment. This class manages
- * adding, sorting, and removing objects from two doubly liked lists
+ * the 3rd database class for the 3rd assignment. This class manages adding, 
+ * searching, sorting, and removing objects from two liked lists
  */
 
 package edu.kettering.cs102.program3;
@@ -19,7 +19,7 @@ public class Database {
 	LinkedList<Station> fmList;		// list that holds all FM Stations
 	
 	/* Constructor
-	 * declare an empty linked lists of Stations
+	 * declare empty linked lists of Stations
 	 */
 	public Database() {
 		amList = new LinkedList<Station>();
@@ -27,7 +27,8 @@ public class Database {
 	}
 	
 	/* addStation (newStation)
-	 * add a Station object to either linked list
+	 * determines which list to add to and calls private method to perform the
+	 * adding of a Station object
 	 */
 	public void addStation (Station newStation) {
 		if (newStation.getFreqBand().toUpperCase().equals("AM"))
@@ -36,6 +37,10 @@ public class Database {
 			addStation(newStation, fmList);
 	}
 	
+	/* addStation (newStation, list)
+	 * adds newStation object to list while maintaining alphabetical sort by 
+	 * call sign and prevents duplicate Stations from being added
+	 */
 	private void addStation (Station newStation, LinkedList<Station> list) {
 		if (list.isEmpty())				// if empty list
 			list.addFirst(newStation);
@@ -126,9 +131,9 @@ public class Database {
 	 */
 	public void addStationCmdLine () {
 		// prompt user to enter a Station
-		System.out.print("Please enter your station in the following "
+		System.out.print("- Please enter your station in the following "
 				+ "format:\ncall_sign/frequency/frequency_band/location/"
-				+ "genre\nEnter your station: ");
+				+ "genre\n- Enter your station: ");
 		Scanner inputScanner = new Scanner(System.in);	// Scanner to read input
 		String inputString = inputScanner.nextLine();	// get user's input
 		String inputData[] = inputString.split("/");	// divide user's input
@@ -161,10 +166,65 @@ public class Database {
 		}
 	}
 	
+	/* removeStation(freqBand, callSign)
+	 * determines which list should be accessed can calls a private method to
+	 * actually remove the Station object if it exists
+	 */
+	public Station removeStation(String freqBand, String callSign) {
+		Station removedStation;				// holds Station to be removed
+		callSign = callSign.toUpperCase();	// error-checking set up
+		
+		if (freqBand.equals("AM"))	// if AM Station, search that list
+			removedStation = removeStation(callSign, amList);
+		else						// if FM Station, search that list
+			removedStation = removeStation(callSign, fmList);
+		return removedStation;		// null of Station doens't exist
+	}
+	
+	/* Station removeStation (callSign, list)
+	 * searches list for a Station that matches callSign, asks user for 
+	 * confirmation of delete, then returns the Station that was removed.
+	 * This method returns null if the Station doesn't exist
+	 */
+	private Station removeStation (String callSign, LinkedList<Station> list) {
+		Station removedStation = null;		// holds the Station to be removed
+		
+		// iterator to step through nodes
+		ListIterator<Station> iterator = list.listIterator();
+		boolean found = false; 	// used to exit iteration when Station is found
+		
+		// while not at end of list and Station not found
+		while (iterator.hasNext() && !found) {
+			Station current = iterator.next();		// step to next node
+			if (current.getCallSign().equals(callSign)) {	// if Station found
+				removedStation = current;	// get removed Station
+				found = true;				// set flag, Station has been found
+			}
+		}
+		
+		if (removedStation != null) {	// if station exists
+			// ask user for confirmation of delete
+			System.out.println("- Are you sure you want to remove this "
+								+ "station?\n"+ removedStation.getStation()
+								+ "\n- Enter 'yes' to confirm or anything else "
+								+ "to cancel deletion:");
+			Scanner inputScanner = new Scanner(System.in); // used to read input
+			
+			// if user confirmed deletion
+			if (inputScanner.nextLine().toUpperCase().equals("YES")) {
+				list.remove(iterator.previousIndex());
+				System.out.println("Staiton successfully removed.");
+			} else	// if confirmation is declined
+				System.out.println("Staiton remove cancelled.");
+		} else {	// Station does not exist
+			System.err.print("Station does not exist.\n");
+		}
+		return removedStation;	// return removed Station
+	}
 	
 	/* printAll()
 	 * loop through every Station in the database a print all Station info.
-	 * If the database is empty, returns 0 records found.
+	 * If the database is empty, prints zero records found.
 	 */
 	public void printAll() {
 		int counter = 0;					// counts number of records
@@ -175,7 +235,7 @@ public class Database {
 		System.out.println("Found records: " + counter); // print Station count
 	}
 	
-	/* printAll (list)
+	/* int printAll (list)
 	 * prints all Stations in list and returns integer of records printed
 	 */
 	private int printAll(LinkedList<Station> list) {
@@ -184,7 +244,7 @@ public class Database {
 		ListIterator<Station> iterator = list.listIterator();
 		while (iterator.hasNext()) { // loop through linked list, print Stations
 			System.out.print(iterator.next().getStation() + "\n");
-			count++;
+			count++;		// increment number of records found
 		}
 		return count;		// return number of records printed
 	}
@@ -195,17 +255,17 @@ public class Database {
 	 */
 	public void printFoundCallSign(String input) {
 		int count = 0;		// counts number of records found
-		count = printFoundCallSign(input, amList);
-		count = count + printFoundCallSign(input, fmList);
-		System.out.println("Found matches: " + count);
+		count = printFoundCallSign(input, amList);			// update count
+		count = count + printFoundCallSign(input, fmList);	// update count
+		System.out.println("Found matches: " + count);		// print count
 	}
 	
-	/* findCallSign (input, list)
+	/* int printFoundCallSign (input, list)
 	 * searches list for the call sign "input" and returns count of the 
 	 * number of records found
 	 */
 	private int printFoundCallSign(String input, LinkedList<Station> list) {
-		int count = 0;	// used to count number of matches found
+		int count = 0;					// used to count number of matches found
 		input = input.toUpperCase();	// error checking setup
 		
 		boolean found = false;		// indicates if call sign has been found
@@ -229,45 +289,45 @@ public class Database {
 	 * input frequency and frequency band
 	 */
 	public void printFoundFreq(String inputFreqBand, String inputFreq) {
-/*
-		int counter = 0;		// used to count number of matches found
-		inputFreqBand = inputFreqBand.toUpperCase();	// error checking
-		
-		if (inputFreqBand.equals("AM"))	// if AM, remove last 0
+		int count = 0;
+		if (inputFreqBand.equals("AM")) { // if AM, remove last 0
 			inputFreq = inputFreq.substring(0, inputFreq.length() - 1);
-		else	// if FM, remove dot "."
+			count = printFoundFreq(inputFreq, amList);	// get num of matches
+		} else { 	// if FM, remove dot "."
 			inputFreq = inputFreq.replace(".", "");
-
-		try {
-			// throws exception for invalid input
+			count = printFoundFreq(inputFreq, fmList);	// get num of matches
+		}
+		System.out.println("Found matches: " + count);	// print matches found
+	}
+	
+	/* int printFoundFreq(inputFreq, list)
+	 * searches Stations within list and prints all frequencies that match the 
+	 * user's input frequency. Returns an integer of number of matches found
+	 */
+	private int printFoundFreq(String inputFreq, LinkedList<Station> list) {
+		int count = 0;		// used to count number of matches found
+		
+		try { // throws exception for invalid input
 			int inputFreqInt = Integer.parseInt(inputFreq);
-			Node loopNode = amList.head;	// start with AM list
 			
-			// loop that checks all lists, both AM and FM
-			for (int listCount = 0; listCount < LIST_COUNT; listCount++) {
-				// loop thru all stations checking for frequency matches
-				while (loopNode != null) {
-					// if freq matches, continue
-					if (inputFreqInt == loopNode.getStation().getFreq())
-						// if freqBand also matches, consider the station found
-						if (inputFreqBand.equals(
-										loopNode.getStation().getFreqBand())) {
-							// print formatted station data
-							System.out.println(loopNode.getStationInfo());
-							counter++;	// increment number of found matches
-						}
-					loopNode = loopNode.getNext();	// get next node
+			// iterator to step through linked list
+			ListIterator<Station> iterator = list.listIterator();
+			
+			while (iterator.hasNext()) {
+				Station current = iterator.next();
+				// if freq matches, found Station
+				if (inputFreqInt == current.getFreq()) {
+					// print formatted station data
+					System.out.println(current.getStation());
+					count++;	// increment number of found matches
 				}
-				loopNode = fmList.head;		// next check FM station
-			}	
-			System.out.println("Found matches: " + counter);
-		} catch (NumberFormatException error) { // if frequency is not an usable
+			}
+		} catch (NumberFormatException error) { // if frequency is not usable
 			// user can enter AM and decimal number, resulting in this error
 			System.err.print("Invalid input. Frequency must be an integer for "
 							 + "AM or a single decimal for FM.\n");
 		}
-	
-*/
+		return count;		// return number of matches found
 	}
 	
 	/* printFoundGenre (input)
@@ -285,23 +345,26 @@ public class Database {
 		// print number of found matches
 		System.out.println("Found matches: " + count);	
 	}
-		
+	
+	/* int printFoundGenre(input, list)
+	 * searches all Stations and prints those which contain user's input String
+	 * within the Station's genre. The integer returned is the count of the
+	 * number of Stations found which contain the user's input String
+	 */
 	private int printFoundGenre(String input, LinkedList<Station> list) {
+		int count = 0;			// keep count of how many matches were found
+		// iterator to walk through list
+		ListIterator<Station> iterator = list.listIterator();
 		
-			while (loopNode != null) {
-				// check if user's input is contained in station's genre
-				if (loopNode.getStation().getGenre().toUpperCase()
-															.contains(input)) {
+		while (iterator.hasNext()) {	// loop through list
+			Station current = iterator.next();	// get current Station
+			// if the Station genre contains the user's input string
+			if (current.getGenre().toUpperCase().contains(input)) {
 					// print station's formatted information
-					System.out.println(loopNode.getStationInfo());
-					counter++;	// increment number of found matches
-				}
-				loopNode = loopNode.getNext();	// get next node
+					System.out.println(current.getStation());
+					count++;	// increment number of found matches
 			}
-			loopNode = fmList.head;				// next check FM station
 		}
-		// display number of found matches
-		System.out.println("Found matches: " + counter);
-*/
+		return count;	// return number of records found
 	}
 }

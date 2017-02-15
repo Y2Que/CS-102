@@ -1,11 +1,11 @@
 /* James Garza
  * Login ID: garz6275
- * CS-102, Winter 28.01.2017
- * Program Assignment 2
- * Prog2.java
+ * CS-102, Winter 14.02.2017
+ * Program Assignment 3
+ * Prog3.java
  * this program takes user's input file that contains stations, adds those
  * formatted stations into a database, and performs search and print functions
- * on the database 
+ * on the database
  */
 
 package edu.kettering.cs102.program3;
@@ -17,6 +17,7 @@ public class Prog3 {
 	final static int SEARCH_GENRE = 3;
 	final static int PRINT_ALL = 4;
 	final static int ADD_STATION = 5;
+	final static int REMOVE_STATION = 6;
 	final static int EXIT = 9;
 	
 	/* main (args[0])
@@ -47,6 +48,7 @@ public class Prog3 {
 			System.out.print("| 3 - Search for a genre      |\n");
 			System.out.print("| 4 - Print all records       |\n");
 			System.out.print("| 5 - Add station             |\n");
+			System.out.print("| 6 - Remove Station          |\n");
 			System.out.print("| 9 - Exit program            |\n");
 			System.out.print("+-----------------------------+\n");
 			System.out.print("- Choose a command: ");
@@ -90,6 +92,19 @@ public class Prog3 {
 			case ADD_STATION:		// add Station form command line
 				myDatabase.addStationCmdLine();
 				break;
+			case REMOVE_STATION:
+				do {  // ask user for freq band until "AM" or "FM" is entered
+					System.out.print("- Enter a frequency band (AM or FM): ");
+					userFreqBand = inputScanner.next().toUpperCase();
+				} while (!userFreqBand.equals("AM") && 
+						 !userFreqBand.equals("FM"));
+				// ask user for call sign to remove
+				System.out.print("- Enter a call sign: ");
+				
+				// get Station removed if it exists, null if it does not
+				Station removedStation = myDatabase.removeStation(userFreqBand,
+														inputScanner.next());
+				break;
 			case EXIT:				// exit program
 				System.out.print("Thank you for your time. Goodbye.");
 				endProgram = true;	// set the endProgam flag
@@ -99,7 +114,7 @@ public class Prog3 {
 									+ "Please choose a number shown below.");
 				break;
 			}
-		} while (!endProgram);		// repeat until user enters command 9
+		} while (!endProgram);		// repeat until user enters Exit command
 		inputScanner.close();		// memory clean up
 	}
 }
