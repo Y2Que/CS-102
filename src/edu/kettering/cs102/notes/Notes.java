@@ -5,6 +5,8 @@
 
 package edu.kettering.cs102.notes;
 
+import java.util.NoSuchElementException;
+
 public class Notes {
 
 	// 27.01.2017
@@ -401,9 +403,136 @@ class Tree<T extends Comparable<? super T>> {
 		else 
 			prev.setLeft(leaf);
 	}
+	
+	/* 
+	 * trees can get unbalanced and you can use AVI trees or red/black trees
+	 * to re-balance the binary tree
+	 */
+	public void addRecursive(T target) {
+		root = addRecursive(target, root);
+	}
+	private TreeNode<T> addRecursive(T target, TreeNode<T> current) {
+		if (current == null) {		// base case
+			TreeNode<T> leaf = new TreeNode<T>();
+			leaf.setDatum(target);
+			leaf.setLeft(null);
+			leaf.setRight(null);
+			return leaf;
+		} 
+		if (current.getDatum().compareTo(target) < 0) // target datum > current
+			current.setRight(addRecursive(target, current.getRight()));
+		else		// target datum < current datum
+			current.setLeft(addRecursive(target,current.getLeft()));
+		
+		return current;
+	}
+	
+	
+	/* Remove from binary tree
+	 * 
+	 * short-circuiting, if current is null, the 2nd operation in the if
+	 * statement does not evaluate, thus does not throw an exception
+	 * (a && b) - short circuiting, stop evaluating if a is false
+	 * (a & c)  - no short circuiting, always evaluates both a and b
+	 */
+	public void remove (T target) {
+		TreeNode<T> current = root;
+		TreeNode<T> previous =  null;
+		
+		while (current != null && !(current.getDatum().equals(target))) {
+			previous = current;
+			if (current.getDatum().compareTo(target) < 0)
+				current = current.getRight();
+			else
+				current = current.getLeft();
+		}
+		if (current == null)		// fell off the list
+			throw new NoSuchElementException();
+		
+		if (current.getRight() == null) {	// no right child
+			if (previous == null)	// if deleting the root
+				root = current.getLeft();
+			else if (previous.getDatum() == current) // if child is left child
+				previous.setLeft(current.getLeft());
+			else								// if current is right child
+				previous.setRight(current.getLeft());
+		}
+		else if (current.getLeft() == null) {	// no left child
+			if (previous == null)	// if deleting the root
+				root = current.getRight();
+			else if (previous.getDatum() == current) // if child is left child
+				previous.setLeft(current.getRight());
+			else								// if current is right child
+				previous.setRight(current.getRight());
+		}
+		else {
+			previous = current;
+			TreeNode<T> heir = current.getLeft();
+			while (heir.getRight() != null) {
+				previous = heir;
+				heir = heir.getRight();
+			}
+			current.setDatum(heir.getDatum());
+			if (previous.getLeft() == heir)
+				previous.setLeft(heir.getLeft());
+			else previous.setRight(heir.getLeft());
+		}
+	}
+	
+	public void removeRecursive(T target) {
+		root = removeRecursive(target, root);
+	}
+	private TreeNode<T> removeRecursive(T target, TreeNode<T> current) {
+		if (current == null)
+			throw new NoSuchElementException();
+		
+		if (current.getDatum().compareTo(target) < 0) {
+			current.setRight(removeRecursive(target,current.getRight()));
+			return current;
+		}
+		if (current.getDatum().compareTo(target) > 0) {
+			current.setLeft(removeRecursive(target, current.getLeft()));
+			return current;
+		}
+		
+		if (current.getLeft() == null) return current.getRight();
+		if (current.getRight() == null) return current.getLeft();
+		
+		TreeNode<T> heir = current.getLeft();
+		while (heir.getRight() != null)
+			heir = heir.getRight();
+		current.setDatum(heir.getDatum());
+		
+		current.setLeft(removeRecursive(heir.getDatum(), current.getLeft()));
+		
+		return current;
+	}
+	
+	/* Traversal
+	 * Every tree traversal does three things in some order:
+	 * 1) process the root           (N)  -NRL- *NLR* - "pre-order"
+	 * 2) Traverse the left subtree  (L)  -RNL- *LNR* - "in-order"
+	 * 3) Traverse the right subtree (R)  -RLN- *LRN* - "post-order"
+	 * 
+	 * 
+	 */
+	
+	/* for LNR "in-order" traversal
+	 */
+	public void print() {
+		print(root);
+	}
+	private void print( TreeNode<T> current) {
+		if (current == null) return;			// if null 
+		// System.out.print(current.getDatum());// for NLR
+		print(current.getLeft());				// print all nodes smaller
+		System.out.print(current.getDatum());	// print current node
+		print(current.getRight());				// print all nodes larger
+	}
+	
+	/* for NLR "pre-order", you can re-construct the same tree if read from file
+	 */
 }
-
-
 
 
 
