@@ -1,0 +1,279 @@
+/* James Garza
+ * Login ID: garz6275
+ * CS-102, Winter 14.02.2017
+ * Program Assignment 3
+ * Database.java
+ * the 3rd database class for the 3rd assignment. This class manages adding, 
+ * searching, sorting, and removing objects from two liked lists
+ */
+
+package edu.kettering.cs102.program4;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
+
+public class Database {
+	BinaryTree amTree;		// list that holds all AM Stations
+	BinaryTree fmTree;		// list that holds all FM Stations
+	
+	/* Constructor
+	 * declare empty binary trees that will hold AM and FM stations
+	 */
+	public Database() {
+		amTree = new BinaryTree();
+		fmTree = new BinaryTree();
+	}
+	
+	/* addStation (newStation)
+	 * determines which tree to add to and class BinaryTree addNode method
+	 */
+	public void addStation (Station newStation) {
+		if (newStation.getFreqBand().toUpperCase().equals("AM"))
+			amTree.addNode(newStation);
+		else
+			fmTree.addNode(newStation);
+	}
+	
+	/* addStationsFromFile (fileName)
+	 * takes a string fileName, reads from file, and adds new Stations to 
+	 * linked lists if the data is formatted correctly. '/' is used to separate 
+	 * data elements on one line. The correct format of file data is:
+	 * callSign/frequencyBand/frequency/location/genre
+	 */
+	public void addStationsFromFile(String fileName) {
+		File myFile = new File(fileName);	// user's input file name
+		Scanner fileScanner = null;			// reads lines from file
+		
+		try {	// attempt to open file
+			fileScanner = new Scanner(myFile);
+		} catch (FileNotFoundException error) { // if file not found, return
+			System.err.println("ERROR: File not found.");
+			return;		// exit method
+		}
+		
+		while (fileScanner.hasNextLine()) {
+			String fileLine = fileScanner.nextLine();	// get file line
+			String fileData[] = fileLine.split("/");	// separate data
+			 
+			String callSign = fileData[0];		// 1st data: Station call sign
+			String freqBand = fileData[1];		// 2nd data: Station freq band
+			String location = fileData[3];		// 4th data: location of Station
+			String genre = fileData[4];			// 5th data: Station genre
+			
+			try {	// will throw exception if 3rd data column is not an integer
+				// 3rd data: Station frequency converted from String to integer
+				int freq = Integer.parseInt(fileData[2]);
+				// create new Station, capitalize callSign and freqBand
+				Station myStation = new Station(callSign.toUpperCase(), 
+												freqBand.toUpperCase(), freq, 
+												location, genre);
+				addStation(myStation);	// add Station to database
+			} catch (NumberFormatException error) {	// if non-int in 3rd column
+				System.err.print("ERROR: Could not add Station since file "
+							+ "contains non-integer data is the 3rd column.\n");
+			}
+		}
+		fileScanner.close();	// memory cleanup
+	}
+	
+	/* addStationCmdLine ()
+	 * user adds a Station object to the database via command line
+	 */
+	public void addStationCmdLine () {
+		// prompt user to enter a Station
+		System.out.print("- Please enter your station in the following "
+				+ "format:\ncall_sign/frequency/frequency_band/location/"
+				+ "genre\n- Enter your station: ");
+		Scanner inputScanner = new Scanner(System.in);	// Scanner to read input
+		String inputString = inputScanner.nextLine();	// get user's input
+		String inputData[] = inputString.split("/");	// divide user's input
+		
+		try {	// check for invalid input
+			String callSign = inputData[0].toUpperCase();	// Station call sign
+			String freqStr  = inputData[1];					// Station frequency
+			String freqBand = inputData[2].toUpperCase(); 	// Station freq band
+			String location = inputData[3];					// Station location
+			String genre    = inputData[4];					// Station genre
+			
+			if (freqBand.equals("AM"))	// if AM, remove last 0
+				freqStr = freqStr.substring(0, freqStr.length() - 1);
+			else	// if FM, remove decimal '.'
+				freqStr = freqStr.replace(".", "");
+			
+			// Station frequency converted from String to integer
+			int freq = Integer.parseInt(freqStr);
+			// create new Station 
+			Station myStation = new Station(callSign, freqBand, freq, 
+											location, genre);
+			addStation(myStation);	// add Station to database
+		} catch (NumberFormatException error) {	// if non-int in 2nd field
+			System.err.print("ERROR: Could not add Station since input "
+						+ "contains mismatched data formats between frequency "
+						+ "and frequency_band.\n");
+
+		} catch (ArrayIndexOutOfBoundsException error) { // invalid input
+			System.err.print("ERROR: Invalid input, could not add Station.\n");
+		}
+	}
+	
+	/* removeStation(freqBand, callSign)
+	 * determines which list should be accessed can calls a private method to
+	 * actually remove the Station object if it exists
+	 */
+	public void removeStation(String freqBand, String callSign) {
+		callSign = callSign.toUpperCase();	// error-checking set up
+		
+		if (freqBand.equals("AM"))	// if AM Station, search that list
+			amTree.removeNode(callSign);
+		else						// if FM Station, search that list
+			fmTree.removeNode(callSign);
+	}
+	
+	/* printAll()
+	 * loop through every Station in the database a print all Station info.
+	 * If the database is empty, prints zero records found.
+	 */
+	public void printAll() {
+		int counter = 0;					// counts number of records
+		System.out.print("AM stations:\n");
+		counter = printAll(amTree);			// update count of AM Stations 
+		System.out.print("FM stations:\n");
+		counter += printAll(fmTree);		// update count of FM Stations
+		System.out.println("Found records: " + counter); // print Station count
+	}
+	
+	/* int printAll (list)
+	 * prints all Stations in list and returns integer of records printed
+	 */
+	private int printAll(LinkedList<Station> list) {
+		int count = 0;	// count number of records printed
+		// iterator to step through nodes
+		ListIterator<Station> iterator = list.listIterator();
+		while (iterator.hasNext()) { // loop through linked list, print Stations
+			System.out.print(iterator.next().getStation() + "\n");
+			count++;		// increment number of records found
+		}
+		return count;		// return number of records printed
+	}
+	
+	/* printFoundCallSign (input)
+	 * searches all Stations and prints all call signs that match the user's
+	 * input string
+	 */
+	public void printFoundCallSign(String input) {
+		int count = 0;		// counts number of records found
+		count = printFoundCallSign(input, amList);			// update count
+		count = count + printFoundCallSign(input, fmList);	// update count
+		System.out.println("Found matches: " + count);		// print count
+	}
+	
+	/* int printFoundCallSign (input, list)
+	 * searches list for the call sign "input" and returns count of the 
+	 * number of records found
+	 */
+	private int printFoundCallSign(String input, LinkedList<Station> list) {
+		int count = 0;					// used to count number of matches found
+		input = input.toUpperCase();	// error checking setup
+		
+		boolean found = false;		// indicates if call sign has been found
+		// iterator to step through linked list
+		ListIterator<Station> iterator = list.listIterator();
+		
+		// while not at end of list and not found
+		while (iterator.hasNext() && !found) {	
+			Station current = iterator.next();			// store current Station
+			if (current.getCallSign().equals(input)) {	// if match found
+				found = true;					// set found variable to true
+				count++;						// increment count found
+				System.out.println(current.getStation()); // print Station info
+			}
+		}
+		return count;		// return number of matches found
+	}
+
+	/* printFoundFreq(inputFreqBand, inputFreq)
+	 * searches all stations and prints all frequencies that contain the user's
+	 * input frequency and frequency band
+	 */
+	public void printFoundFreq(String inputFreqBand, String inputFreq) {
+		int count = 0;
+		if (inputFreqBand.equals("AM")) { // if AM, remove last 0
+			inputFreq = inputFreq.substring(0, inputFreq.length() - 1);
+			count = printFoundFreq(inputFreq, amList);	// get num of matches
+		} else { 	// if FM, remove dot "."
+			inputFreq = inputFreq.replace(".", "");
+			count = printFoundFreq(inputFreq, fmList);	// get num of matches
+		}
+		System.out.println("Found matches: " + count);	// print matches found
+	}
+	
+	/* int printFoundFreq(inputFreq, list)
+	 * searches Stations within list and prints all frequencies that match the 
+	 * user's input frequency. Returns an integer of number of matches found
+	 */
+	private int printFoundFreq(String inputFreq, LinkedList<Station> list) {
+		int count = 0;		// used to count number of matches found
+		
+		try { // throws exception for invalid input
+			int inputFreqInt = Integer.parseInt(inputFreq);
+			
+			// iterator to step through linked list
+			ListIterator<Station> iterator = list.listIterator();
+			
+			while (iterator.hasNext()) {
+				Station current = iterator.next();
+				// if freq matches, found Station
+				if (inputFreqInt == current.getFreq()) {
+					// print formatted station data
+					System.out.println(current.getStation());
+					count++;	// increment number of found matches
+				}
+			}
+		} catch (NumberFormatException error) { // if frequency is not usable
+			// user can enter AM and decimal number, resulting in this error
+			System.err.print("Invalid input. Frequency must be an integer for "
+							 + "AM or a single decimal for FM.\n");
+		}
+		return count;		// return number of matches found
+	}
+	
+	/* printFoundGenre (input)
+	 * searches all Stations and prints all genres that contain the user's
+	 * input string
+	 */
+	public void printFoundGenre(String input) {
+		int count = 0;	// used to count number of matches found
+		input = input.toUpperCase();	// error checking setup
+		
+		// update count for found matches
+		count = printFoundGenre(input, amList);				// check AM list
+		count = count + printFoundGenre (input, fmList);	// check FM list
+		
+		// print number of found matches
+		System.out.println("Found matches: " + count);	
+	}
+	
+	/* int printFoundGenre(input, list)
+	 * searches all Stations and prints those which contain user's input String
+	 * within the Station's genre. The integer returned is the count of the
+	 * number of Stations found which contain the user's input String
+	 */
+	private int printFoundGenre(String input, LinkedList<Station> list) {
+		int count = 0;			// keep count of how many matches were found
+		// iterator to walk through list
+		ListIterator<Station> iterator = list.listIterator();
+		
+		while (iterator.hasNext()) {	// loop through list
+			Station current = iterator.next();	// get current Station
+			// if the Station genre contains the user's input string
+			if (current.getGenre().toUpperCase().contains(input)) {
+					// print station's formatted information
+					System.out.println(current.getStation());
+					count++;	// increment number of found matches
+			}
+		}
+		return count;	// return number of records found
+	}
+
+
+}

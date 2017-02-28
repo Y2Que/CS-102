@@ -483,28 +483,33 @@ class Tree<T extends Comparable<? super T>> {
 		root = removeRecursive(target, root);
 	}
 	private TreeNode<T> removeRecursive(T target, TreeNode<T> current) {
+		// if we have fallen off the list
 		if (current == null)
 			throw new NoSuchElementException();
-		
+		// if target is larger than current
 		if (current.getDatum().compareTo(target) < 0) {
 			current.setRight(removeRecursive(target,current.getRight()));
 			return current;
 		}
+		// if target is less than current
 		if (current.getDatum().compareTo(target) > 0) {
 			current.setLeft(removeRecursive(target, current.getLeft()));
 			return current;
 		}
-		
+		// if target is found and has 1 child, replace with non-empty child
 		if (current.getLeft() == null) return current.getRight();
 		if (current.getRight() == null) return current.getLeft();
-		
+		// if current has 2 children, need an heir, someone to replace current
 		TreeNode<T> heir = current.getLeft();
 		while (heir.getRight() != null)
 			heir = heir.getRight();
+		// replace current with heir
 		current.setDatum(heir.getDatum());
 		
+		// remove duplicate heir (remove leaf)
 		current.setLeft(removeRecursive(heir.getDatum(), current.getLeft()));
 		
+		// re-attach sub-tree to main tree
 		return current;
 	}
 	
