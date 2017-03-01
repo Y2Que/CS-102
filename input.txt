@@ -5,3 +5,14 @@ WUGN/AM/997/Midland/religious
 WUGN/FM/997/Midland/religious
 WWJ/AM/95/Detroit/news
 WKCQ/FM/981/Saginaw/country
+WRSR/FM/1039/Owosso/Classic Rock
+WDMK/FM/1059/Detroit/Urban Contemporary
+WAKL/FM/1063/Linden/Christian Contemporary
+WDTW/FM/1067/Detroit/Classic Rock
+WCRZ/FM/1079/Flint/Adult Contemporary
+WRDT/AM/56/Monroe/Religious
+WSNL/AM/60/Flint/Religious
+CFCO/AM/63/Chatham/Country
+WMIC/AM/66/Sandusky/Country
+WNZK/AM/69/Dearborn Heights/Ethnic
+CHYR/AM/71/Leamington/Hot AC

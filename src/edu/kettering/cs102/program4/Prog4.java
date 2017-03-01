@@ -1,7 +1,7 @@
 /* James Garza
  * Login ID: garz6275
- * CS-102, Winter 14.02.2017
- * Program Assignment 3
+ * CS-102, Winter 28.02.2017
+ * Program Assignment 4
  * Prog3.java
  * this program takes user's input file that contains stations, adds those
  * formatted stations into a database, and performs search and print functions
@@ -18,6 +18,8 @@ public class Prog4 {
 	final static int PRINT_ALL = 4;
 	final static int ADD_STATION = 5;
 	final static int REMOVE_STATION = 6;
+	final static int WRITE_DATABASE_TO_FILE = 7;
+	final static int BUILD_DATABASE_FROM_FILE = 8;
 	final static int EXIT = 9;
 	
 	/* main (args[0])
@@ -42,20 +44,22 @@ public class Prog4 {
 		boolean endProgram = false;	// used to determine when to exit program
 		
 		do { // main loop that asks for input and performs database functions
-			System.out.print("+----------COMMANDS-----------+\n");
-			System.out.print("| 1 - Search for a call sign  |\n");
-			System.out.print("| 2 - Search for a frequency  |\n");
-			System.out.print("| 3 - Search for a genre      |\n");
-			System.out.print("| 4 - Print all records       |\n");
-			System.out.print("| 5 - Add station             |\n");
-			System.out.print("| 6 - Remove Station          |\n");
-			System.out.print("| 9 - Exit program            |\n");
-			System.out.print("+-----------------------------+\n");
+			System.out.print("+-----------COMMANDS------------+\n");
+			System.out.print("| 1 - Search for a call sign    |\n");
+			System.out.print("| 2 - Search for a frequency    |\n");
+			System.out.print("| 3 - Search for a genre        |\n");
+			System.out.print("| 4 - Print all records         |\n");
+			System.out.print("| 5 - Add station               |\n");
+			System.out.print("| 6 - Remove station            |\n");
+			System.out.print("| 7 - Write database to file    |\n");
+			System.out.print("| 8 - Build database from file  |\n");
+			System.out.print("| 9 - Exit program              |\n");
+			System.out.print("+-------------------------------+\n");
 			System.out.print("- Choose a command: ");
 
 			while (!inputScanner.hasNextInt()) {   // if input is not an integer
-					System.err.print("Invalid input. Please"
-									  + " choose a number shown above.\n");
+					System.err.println("Invalid input. Please"
+									  + " choose a number shown above.");
 					System.out.print("- Choose a command: ");
 					inputScanner.next();	// discard invalid value
 			}
@@ -102,8 +106,25 @@ public class Prog4 {
 				System.out.print("- Enter a call sign: ");
 				
 				// get Station removed if it exists, null if it does not
-				Station removedStation = myDatabase.removeStation(userFreqBand,
-														inputScanner.next());
+				myDatabase.removeStation(userFreqBand, inputScanner.next());
+				break;
+			case WRITE_DATABASE_TO_FILE:
+				do {  // ask user for output file name
+					System.out.print("- Enter a file name for the contents of "
+								   + "the database to be written to (must end "
+								   + "with \".txt\"): ");
+					userFile = inputScanner.next();
+				} while (!userFile.endsWith(".txt")); // ensure a text file
+				myDatabase.printToFile(userFile);	  // print database to file
+				break;
+			case BUILD_DATABASE_FROM_FILE:				
+				do {  // ask user for file name
+					System.out.print("- Enter a file name to load database "
+										+ "from (must end with \".txt\"): ");
+					userFile = inputScanner.next();	  // get file name
+				} while (!userFile.endsWith(".txt")); // ensure a text file
+				// get file name from user & add Stations from file to database
+				myDatabase.buildDatabaseFromFile(userFile);
 				break;
 			case EXIT:				// exit program
 				System.out.print("Thank you for your time. Goodbye.");

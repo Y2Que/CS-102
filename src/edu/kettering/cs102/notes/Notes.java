@@ -372,6 +372,8 @@ class Tree<T extends Comparable<? super T>> {
 		if (current == null)
 			return false;
 		if (current.getDatum().equals(target))
+			return true;
+		if (current.getDatum().compareTo(target) < 0)
 			return search(target, current.getRight());
 		else 
 			return search(target, current.getLeft());

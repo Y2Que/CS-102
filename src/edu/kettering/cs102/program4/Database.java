@@ -1,15 +1,14 @@
 /* James Garza
  * Login ID: garz6275
- * CS-102, Winter 14.02.2017
- * Program Assignment 3
+ * CS-102, Winter 28.02.2017
+ * Program Assignment 4
  * Database.java
- * the 3rd database class for the 3rd assignment. This class manages adding, 
- * searching, sorting, and removing objects from two liked lists
+ * the 4th database class for the 4th assignment. This class manages adding, 
+ * searching, sorting, and removing objects from two binary search trees
  */
 
 package edu.kettering.cs102.program4;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 
 public class Database {
@@ -116,17 +115,56 @@ public class Database {
 		}
 	}
 	
+	/* printToFile (userFile)
+	 * calls binary tree method to write entire contents into userFileStr in
+	 * pre-order to tree can later be recreated with the same structure
+	 */
+	public void printToFile(String userFileStr) {
+		try {
+			PrintWriter writer = new PrintWriter(userFileStr);
+			amTree.writeTreeToFile(writer);
+			fmTree.writeTreeToFile(writer);
+			writer.close();
+			System.out.print("Database write susscessful.\n");
+		} catch (IOException error) {
+			System.err.print("ERROR: Unable to write to output file.\n");
+		}
+	}
+	
+	/* buildDatabaseFromFile (userFileStr)
+	 * checks if user's file exists, if it does then drops the current database
+	 * and creates a new database based on the user's file
+	 */
+	public void buildDatabaseFromFile (String userFileStr) {
+		// declare file to check if it exists 
+		File userFile = new File(userFileStr);
+		// if file does not exists or is a folder, exit method
+		if(!userFile.exists() || userFile.isDirectory()) {
+			System.err.print("ERROR: No file found.\n");
+			return;		// exit method
+		}
+		amTree.removeAll();		// remove all Station from AM tree
+		fmTree.removeAll();		// remove all Station from FM tree
+		
+		// initialize database from file
+		addStationsFromFile(userFileStr);
+		System.out.print("Load susscessful.\n");
+	}
+	
 	/* removeStation(freqBand, callSign)
 	 * determines which list should be accessed can calls a private method to
 	 * actually remove the Station object if it exists
 	 */
 	public void removeStation(String freqBand, String callSign) {
 		callSign = callSign.toUpperCase();	// error-checking set up
-		
-		if (freqBand.equals("AM"))	// if AM Station, search that list
-			amTree.removeNode(callSign);
-		else						// if FM Station, search that list
-			fmTree.removeNode(callSign);
+		try { // try to remove Station, if it doesn't exist, throws an exception
+			if (freqBand.equals("AM"))	// if AM Station, search that list
+				amTree.removeNode(callSign);
+			else						// if FM Station, search that list
+				fmTree.removeNode(callSign);
+		} catch (NoSuchElementException error) { // if Station not found
+			System.err.println("ERROR: Station not found.");
+		}
 	}
 	
 	/* printAll()
@@ -136,59 +174,24 @@ public class Database {
 	public void printAll() {
 		int counter = 0;					// counts number of records
 		System.out.print("AM stations:\n");
-		counter = printAll(amTree);			// update count of AM Stations 
+		counter = amTree.printInOrder();			// update count of AM Stations 
 		System.out.print("FM stations:\n");
-		counter += printAll(fmTree);		// update count of FM Stations
+		counter += fmTree.printInOrder();		// update count of FM Stations
 		System.out.println("Found records: " + counter); // print Station count
 	}
 	
-	/* int printAll (list)
-	 * prints all Stations in list and returns integer of records printed
-	 */
-	private int printAll(LinkedList<Station> list) {
-		int count = 0;	// count number of records printed
-		// iterator to step through nodes
-		ListIterator<Station> iterator = list.listIterator();
-		while (iterator.hasNext()) { // loop through linked list, print Stations
-			System.out.print(iterator.next().getStation() + "\n");
-			count++;		// increment number of records found
-		}
-		return count;		// return number of records printed
-	}
-	
 	/* printFoundCallSign (input)
-	 * searches all Stations and prints all call signs that match the user's
-	 * input string
+	 * searches list for the call sign "input", if found it will print the 
+	 * Station and finally return the number of records found
 	 */
 	public void printFoundCallSign(String input) {
-		int count = 0;		// counts number of records found
-		count = printFoundCallSign(input, amList);			// update count
-		count = count + printFoundCallSign(input, fmList);	// update count
-		System.out.println("Found matches: " + count);		// print count
-	}
-	
-	/* int printFoundCallSign (input, list)
-	 * searches list for the call sign "input" and returns count of the 
-	 * number of records found
-	 */
-	private int printFoundCallSign(String input, LinkedList<Station> list) {
-		int count = 0;					// used to count number of matches found
-		input = input.toUpperCase();	// error checking setup
+		input = input.toUpperCase();					// error checking setup
 		
-		boolean found = false;		// indicates if call sign has been found
-		// iterator to step through linked list
-		ListIterator<Station> iterator = list.listIterator();
+		// update count for found matches
+		int count = amTree.printFoundCallSign(input);	// update count
+		count += fmTree.printFoundCallSign(input);		// update count
 		
-		// while not at end of list and not found
-		while (iterator.hasNext() && !found) {	
-			Station current = iterator.next();			// store current Station
-			if (current.getCallSign().equals(input)) {	// if match found
-				found = true;					// set found variable to true
-				count++;						// increment count found
-				System.out.println(current.getStation()); // print Station info
-			}
-		}
-		return count;		// return number of matches found
+		System.out.println("Found matches: " + count);	// print count
 	}
 
 	/* printFoundFreq(inputFreqBand, inputFreq)
@@ -197,44 +200,14 @@ public class Database {
 	 */
 	public void printFoundFreq(String inputFreqBand, String inputFreq) {
 		int count = 0;
-		if (inputFreqBand.equals("AM")) { // if AM, remove last 0
+		if (inputFreqBand.equals("AM")) { 				// if AM, remove last 0
 			inputFreq = inputFreq.substring(0, inputFreq.length() - 1);
-			count = printFoundFreq(inputFreq, amList);	// get num of matches
-		} else { 	// if FM, remove dot "."
+			count = amTree.printFoundFreq(inputFreq);	// get num of matches
+		} else { 										// if FM, remove dot "."
 			inputFreq = inputFreq.replace(".", "");
-			count = printFoundFreq(inputFreq, fmList);	// get num of matches
+			count = fmTree.printFoundFreq(inputFreq);	// get num of matches
 		}
 		System.out.println("Found matches: " + count);	// print matches found
-	}
-	
-	/* int printFoundFreq(inputFreq, list)
-	 * searches Stations within list and prints all frequencies that match the 
-	 * user's input frequency. Returns an integer of number of matches found
-	 */
-	private int printFoundFreq(String inputFreq, LinkedList<Station> list) {
-		int count = 0;		// used to count number of matches found
-		
-		try { // throws exception for invalid input
-			int inputFreqInt = Integer.parseInt(inputFreq);
-			
-			// iterator to step through linked list
-			ListIterator<Station> iterator = list.listIterator();
-			
-			while (iterator.hasNext()) {
-				Station current = iterator.next();
-				// if freq matches, found Station
-				if (inputFreqInt == current.getFreq()) {
-					// print formatted station data
-					System.out.println(current.getStation());
-					count++;	// increment number of found matches
-				}
-			}
-		} catch (NumberFormatException error) { // if frequency is not usable
-			// user can enter AM and decimal number, resulting in this error
-			System.err.print("Invalid input. Frequency must be an integer for "
-							 + "AM or a single decimal for FM.\n");
-		}
-		return count;		// return number of matches found
 	}
 	
 	/* printFoundGenre (input)
@@ -242,38 +215,13 @@ public class Database {
 	 * input string
 	 */
 	public void printFoundGenre(String input) {
-		int count = 0;	// used to count number of matches found
 		input = input.toUpperCase();	// error checking setup
 		
 		// update count for found matches
-		count = printFoundGenre(input, amList);				// check AM list
-		count = count + printFoundGenre (input, fmList);	// check FM list
+		int count = amTree.printFoundGenre(input);	// check AM list
+		count += fmTree.printFoundGenre(input);		// check FM list
 		
 		// print number of found matches
 		System.out.println("Found matches: " + count);	
 	}
-	
-	/* int printFoundGenre(input, list)
-	 * searches all Stations and prints those which contain user's input String
-	 * within the Station's genre. The integer returned is the count of the
-	 * number of Stations found which contain the user's input String
-	 */
-	private int printFoundGenre(String input, LinkedList<Station> list) {
-		int count = 0;			// keep count of how many matches were found
-		// iterator to walk through list
-		ListIterator<Station> iterator = list.listIterator();
-		
-		while (iterator.hasNext()) {	// loop through list
-			Station current = iterator.next();	// get current Station
-			// if the Station genre contains the user's input string
-			if (current.getGenre().toUpperCase().contains(input)) {
-					// print station's formatted information
-					System.out.println(current.getStation());
-					count++;	// increment number of found matches
-			}
-		}
-		return count;	// return number of records found
-	}
-
-
 }

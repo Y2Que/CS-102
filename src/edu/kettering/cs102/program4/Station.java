@@ -1,10 +1,10 @@
 /* James Garza
  * Login ID: garz6275
- * CS-102, Winter 17.01.2017
- * Program Assignment 2
+ * CS-102, Winter 28.02.2017
+ * Program Assignment 4
  * Station.java
  * this class defines a Station object with call sign, frequency band, 
- * frequency, location, and genre attributes. 
+ * frequency, location, and genre attributes 
  */
 
 package edu.kettering.cs102.program4;
@@ -67,5 +67,14 @@ public class Station {
 	public String getStation() {
 		return callSign + ", " + getFormattedFreq() + ", "
 			    + location + ": " + genre;
+	}
+	
+	/* Formatted Getter Method
+	 * returns all info about the station in a formatted string meant to be
+	 * written to a file and later re-added from the file
+	 */
+	public String getStationToFile() {
+		return callSign + "/" + freqBand + "/" + freq + "/" + location + "/" 
+						+ genre;
 	}
 }
