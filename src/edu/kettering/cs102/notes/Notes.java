@@ -514,6 +514,14 @@ class Tree<T extends Comparable<? super T>> {
 		// re-attach sub-tree to main tree
 		return current;
 	}
+	/* Array-Based Trees
+	 *                    (1)
+	 *                    /  \
+	 *                  (2)   (3)
+	 *                 /  \   /  \
+	 *               (4) (5) (6) (7)
+	 * - children of node at index n can be found at 2n and 2n + 1
+	 */
 	
 	/* Traversal
 	 * Every tree traversal does three things in some order:
@@ -541,6 +549,291 @@ class Tree<T extends Comparable<? super T>> {
 	 */
 }
 
+/* Analysis of Algorithms
+ * 
+ * Q: How long does an algorithm take to run?
+ * A: Measure time as a function
+ * 		f: input size -> # of instructions performed
+ * 
+ * Selection Sort
+ * 
+ */
+class SortingAlgorithms {
+	// dummy constructor
+	SortingAlgorithms() {}
+	
+	public void selctionSort (int[] data, int start, int end) {
+		int pass;
+		for (pass = start; pass < end; pass++) {
+			int minPos = pass;
+			// look for smallest element
+			for (int comp = pass+1; comp <= end; comp++)
+				// if smaller than current smallest element
+				if (data[comp] < data[minPos])
+					minPos = comp;				// new smallest element
+			
+			int tmp = data[minPos];
+			data[minPos] = data[pass];
+			data[pass] = tmp;
+		}
+	}
+	
+	/* O-Notation
+	 * Def: Let f,g: N -> N be functions.
+	 * We say f(n) = O(g(n))("order g(n)") if there exists some c and n_0
+	 * such that f(n) <= c*g(n) when n >= n_0
+	 * 
+	 * Ex: 
+	 *     2n^2 + 6n - 6 <= 2n^2 + 6n
+	 *                   <= 3n^2 if n is "big"
+	 *                           if n^2 >= 6n
+	 *                           if   n >= 6
+	 * 
+	 * Ex: Binary Search
+	 *  - want to know how many times can I divide n by 2 to get to 1
+	 *        n / (2^x) = 1
+	 *                n = 2^x
+	 *         log_2(n) = x
+	 */
 
-
-
+	/* Priority Queue
+	 *              \  add  | remove |
+	 *               +------+--------+
+	 * sorted list   | O(n) |  O(1)  |
+	 *               +------+--------+
+	 * unsorted list | O(1) |  O(n)  |
+	 *               +------+--------+
+	 */
+	
+	/* Heap - a binary tree with 2 properties:
+	 *   1) it is complete; every level of the tree is filled, except (perhaps)
+	 *      the last which is filled left-to-right
+	 *          o
+	 *        /   \
+	 *       o     o
+	 *      / \   /
+	 *     o  o  o
+	 *   2) Every node is larger than both its children
+	 *                        (100)
+	 *                        /   \
+	 *                      (75) (36)
+	 *                      /  \
+	 *                    (62) (71)
+	 */
+	class Heap {
+		int[] data;
+		int last;
+		final int STARTSIZE = 42;
+		
+		public Heap () {
+			data = new int[STARTSIZE];
+			last = 0;
+		}
+		
+		// This add method takes O(log_2(n)) time
+		public void add (int datum) {
+			if (data.length - 1 == last) {
+				//resize();	// pretended the array is resized
+			}
+			data[++last] = datum;
+			int current = last;
+			// while not at the root and larger than parent
+			while ((current > 1) && (data[current] > data[current/2])) {
+				int tmp = data[current];
+				data[current] = data[current/2];
+				data[current/2] = tmp;
+				current = current/2;
+			}
+		}
+		
+		// This remove method takes O(log_2(n)) time
+		public int remove() {
+			int answer = data[1];
+			data[1] = data[last--];
+			int current = 1;
+			// while there is exists a left child
+			while (current*2 <= last) {
+				int largerChild = current*2;
+				// if there exists a right child and right > left
+				if ((largerChild < last) && 
+								(data[largerChild + 1] > data[largerChild]))
+					largerChild++;
+				// break loop if current is greater than largerChild
+				if (data[current] > data[largerChild])
+					break;
+				//
+				int tmp = data[current];
+				data[current] = data[largerChild];
+				data[largerChild] = tmp;
+				current = largerChild;
+			}
+			return answer;
+		}
+	}
+	/* Min Heap
+	 * to change this max heap to a min heap, multiply by -1 when adding and
+	 * then when pulling out, mutiply by -1 again
+	 */
+	
+	/* Heap Sort
+	 * 1) add to heap
+	 * 2) remove from heap
+	 * 
+	 * How long does it take?
+	 *    n*log_2(n) + n*log_2(n) = 2n*log_2(n)
+	 *                             O(n*log_2(n))
+	 * 
+	 */
+	
+	/* Section Sort \ "priority
+	 * Heap sort    /    queues"
+	 */
+	
+	/* Divide and Conquer Sort
+	 * 1) "Divide" the list into two pieces
+	 * 2) Sort the pieces
+	 * 3) "Combine" the (sorted) pieces
+	 */
+	
+	/* Merge Sort
+	 * "Divide" == halve; "Combine" == merge;
+	 */
+	public void mergeSort (int[] data, int start, int end) {
+		if (start >= end) return;	// 0 or 1 element in the array
+		
+		int mid = (start + end) / 2;	// bug! at max int value, I think
+		mergeSort(data, start, mid);
+		mergeSort(data, mid + 1, end);
+		int[] sorted = new int [end - start + 1];
+		int left = start;
+		int right = mid + 1;
+		int copy = 0;
+		
+		while ((left <= mid) && (right <= end)) {			// \
+			if (data[left] < data[right]) {					//  \
+				sorted[copy++] = data[left++];				//   \
+			} else {										//    \
+				sorted[copy++] = data[right++];				//     \
+			}												//      \ takes
+		} // we know 1 of the arrays is empty				//      / O(n) time
+															//     /
+		// if left is empty, run this loop					//    /
+		while (left <= mid) sorted[copy++] = data[left++];	//   /
+		// if right is empty, run this loop					//  /
+		while (right <= end) sorted[copy++] = data[right++];// /
+		
+		for (copy = 0; copy < sorted.length; copy++) {		// \
+			data[start + copy] = sorted[copy];				//  | O(n) time
+		}													// /
+		
+		/* T(n) = 2n + 2T(n/2)					(n)				O(n) \
+		 * 									   /   \			      \
+		 * 								   (n/2)   (n/2)		O(n)   \ log_2 n
+		 * 								  /   \     /   \			   / levels
+		 * 							   (n/4) (n/4) (n/4) (n/4)	O(n)  /
+		 * 								..    ..    ..     ..    ..  /
+		 * 														\         /
+		 * 														 \       /
+		 * 														  \     /
+		 * 														O(n*log_2(n))
+		 */
+	}
+	
+	/* Quick Sort
+	 * "Divide" == "partition"; "Combine" == 0;
+	 */
+	
+	public void quickSort(int[] data, int start, int end) {
+		if (start >= end) return;
+		int pivot = data[start];
+		int front = start;
+		int back = end;
+		while (true) {	// this loop is O(n)
+			while ((front <= end) && (data[front] <= pivot)) front++;
+			while ((back >= start) && (data[back] > pivot)) back--;
+			if (front > back) break;  // don't cross the beams, break loop
+			int temp = data[front];		// swap
+			data[front] = data[back];
+			data[back] = temp;
+		}
+		int temp = data[start];		// swap pivot into the middle of the list
+		data[start] = data[back];
+		data[back] = temp;
+		quickSort(data, start, back - 1);	// best case: O(n*log_2(n))
+		quickSort(data, back + 1, end);		// worse case: O(n^2)
+											//  n + (n-1) + (n-2) + ... + 2 + 1
+											//  Gauss Sum: n(n+1)/2 = O(n^2)
+	}
+	
+	/* Never Use This Sort: Bubble Sort
+	 * 
+	 */
+	public void bubbleSort (int[] data, int start, int end) {	// O(n^2)
+		for (int pass = end; pass > start; pass--)
+			for (int comp = start; comp < pass; comp++)
+				if (data[comp] > data [comp + 1]) {
+					int temp = data[comp];
+					data[comp] = data[comp++];
+					data[comp++] = temp;
+				}
+	}
+	
+	/* Limits on Sorting
+	 * Theorem: Any comparison-based sorting algorithm requires at least 
+	 *          O(n*log_2(n)) time to execute.
+	 * Proof: idea.. use decision trees			 (a<b ?)
+	 * 										yes	/       \ no
+	 * 									  (b<c ?)      (a<c ?)
+	 * 							      yes /    \ no yes /    \ no
+	 * 							   (a<b<c) (a<c ?) (b<a<c) (b<c ?)
+	 * 									yes	/   \ no    yes /   \ no
+	 * 									(a<c<b)(c<a<b)	(b<c<a)(c<b<a)
+	 * n elements to be sorted
+	 *     n!     leaves
+	 * +   n! - 1 internal nodes
+	 * --------------------------
+	 *    2n!     nodes
+	 *    
+	 * min height of tree = log_2(2(n!))
+	 *                    = log_2(2) + log_2(n!)
+	 *  Stirling's Approx ~ O(n*log_2(n))
+	 */
+	
+	/* Linear-Time Sorting
+	 * - Radix Sort: sort cards by rank only, then by suit. If concatenated 
+	 *               correctly, the cards will be in sorted order
+	 * sort by:  1s    10s   100s
+	 *     235 | 610 | 201 | 026
+	 *     793 | 201 | 504 | 159
+	 *     207 | 793 | 207 | 201
+	 *     159 | 504 | 610 | 207
+	 *     201 | 235 | 026 | 235
+	 *     026 | 026 | 235 | 504
+	 *     610 | 207 | 159 | 610
+	 *     504 | 159 | 739 | 739
+	 * 
+	 * time:  O(n)
+	 * space: O(n)
+	 * - there is a space/time trade off with sorting algorithms
+	 */
+	
+	/* Bin Sort
+	 * 
+	 */
+	
+	/* 
+	 * A(input)           = {0,6,4,1,2,0,2,5,6}
+	 * D (distribution)   = {2,1,2,0,1,1,2}
+	 * 		       indices:  0,1,2,3,4,5,6
+	 * sum of D elements  = {2,3,5,5,6,7,9}
+	 * 
+	 * S (sorted): decrement the index of sum then place the number there
+	 * 				    A = {0,6,4,1,2,0,2,5,6}
+	 * 			   sum(D) = {1,3,5,5,6,7,9}
+	 * 					S = { ,0, , , , , , , }
+	 * 
+	 * 				    A = {0,6,4,1,2,0,2,5,6}
+	 * 			   sum(D) = {1,3,5,5,6,7,8}
+	 * 					S = { ,0, , , , , , ,6}
+	 */
+}
